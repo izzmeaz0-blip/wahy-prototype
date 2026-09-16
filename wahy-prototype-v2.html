@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>وحي — دليل المساجد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#0E3B36;
+  --primary-light:#1C6158;
+  --accent:#B08D3F;
+  --accent-light:#F1E6CC;
+  --bg:#F1EFE6;
+  --surface:#FFFFFF;
+  --text:#151F1C;
+  --text-muted:#5C6B66;
+  --border:#E2DFD2;
+  --danger:#B3432D;
+  --radius:16px;
+  --shadow:0 10px 26px rgba(14,59,54,0.12);
+}
+[data-theme="dark"]{
+  --primary:#1C6158;
+  --primary-light:#2C7C71;
+  --accent:#D8B565;
+  --accent-light:#3A331E;
+  --bg:#10201D;
+  --surface:#17302B;
+  --text:#EDEFE9;
+  --text-muted:#9AACA6;
+  --border:#274842;
+  --danger:#E07358;
+  --shadow:0 10px 26px rgba(0,0,0,0.35);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Tajawal',sans-serif;
+  background:#CFCABB;
+  color:var(--text);
+  display:flex;justify-content:center;min-height:100vh;padding:24px 0;
+  transition:background .3s;
+}
+[data-theme="dark"] body{background:#0A1512;}
+h1,h2,.logo,.brand{font-family:'Cairo',sans-serif;}
+.phone{
+  width:400px;max-width:100%;background:var(--bg);min-height:800px;
+  border-radius:30px;overflow:hidden;box-shadow:0 20px 60px rgba(14,59,54,0.28);
+  display:flex;flex-direction:column;position:relative;transition:background .3s,color .3s;
+}
+/* Splash */
+#splash{
+  position:absolute;inset:0;z-index:50;background:var(--primary);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:#fff;transition:opacity .5s ease;
+}
+#splash.hide{opacity:0;pointer-events:none;}
+#splash .brand{font-size:44px;font-weight:900;letter-spacing:2px;animation:pop .7s ease;}
+#splash .tag{font-size:13px;opacity:0.8;margin-top:10px;animation:fadeUp 1s ease .3s both;}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes fadeUp{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+header.topbar{
+  background:var(--primary);color:#fff;padding:18px 20px 16px;
+  display:flex;align-items:center;justify-content:space-between;position:relative;z-index:5;
+}
+header.topbar .brand{font-size:22px;font-weight:900;letter-spacing:1px;}
+header.topbar .icons{display:flex;gap:14px;align-items:center;}
+header.topbar .bell{font-size:19px;opacity:0.9;cursor:pointer;position:relative;}
+header.topbar .dot{position:absolute;top:-3px;left:-4px;width:8px;height:8px;background:var(--danger);border-radius:50%;}
+
+.screen{flex:1;overflow-y:auto;padding:18px 16px 92px;animation:fadeIn .25s ease;}
+.screen[hidden]{display:none;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.demo-note{background:var(--accent-light);color:var(--accent);filter:brightness(0.7);font-size:11px;padding:7px 10px;border-radius:8px;margin-bottom:14px;line-height:1.6;}
+[data-theme="dark"] .demo-note{color:#E7D6A2;filter:none;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow);transition:transform .15s;}
+.card.pressable:active{transform:scale(.98);}
+h1{font-size:18px;font-weight:700;margin-bottom:4px;}
+h2{font-size:15px;font-weight:700;margin-bottom:10px;}
+.muted{color:var(--text-muted);font-size:13px;}
+.next-prayer{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;border-radius:var(--radius);padding:22px;text-align:center;margin-bottom:14px;box-shadow:var(--shadow);}
+.next-prayer .label{font-size:13px;opacity:0.85;margin-bottom:6px;}
+.next-prayer .name{font-size:27px;font-weight:900;margin-bottom:4px;font-family:'Cairo',sans-serif;}
+.next-prayer .time{font-size:15px;opacity:0.92;}
+.next-prayer .countdown{font-size:12px;opacity:0.8;margin-top:8px;}
+.row{display:flex;justify-content:space-between;align-items:center;}
+.btn{display:inline-block;background:var(--primary);color:#fff;border:none;border-radius:12px;padding:11px 16px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;text-align:center;width:100%;transition:filter .15s;}
+.btn:active{filter:brightness(.9);}
+.btn.secondary{background:var(--surface);color:var(--primary);border:1px solid var(--primary);}
+.btn.small{width:auto;padding:8px 14px;font-size:13px;}
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.quick-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 4px;text-align:center;font-size:11px;cursor:pointer;color:var(--primary);box-shadow:var(--shadow);transition:transform .15s;}
+.quick-item:active{transform:scale(.95);}
+.quick-item .ic{font-size:21px;display:block;margin-bottom:6px;}
+.search-box{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:12px;}
+.search-box input{border:none;outline:none;background:transparent;font-family:inherit;font-size:14px;flex:1;color:var(--text);}
+.toggle-row{display:flex;gap:8px;margin-bottom:14px;}
+.toggle-row button{flex:1;padding:9px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-family:inherit;font-size:13px;cursor:pointer;color:var(--text-muted);}
+.toggle-row button.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.mosque-card{cursor:pointer;position:relative;}
+.mosque-card .mname{font-size:15px;font-weight:700;margin-bottom:2px;font-family:'Cairo',sans-serif;}
+.mosque-card .mmeta{font-size:12px;color:var(--text-muted);margin-bottom:8px;}
+.heart-btn{position:absolute;left:16px;top:16px;font-size:17px;cursor:pointer;background:none;border:none;color:var(--danger);opacity:.5;transition:opacity .15s,transform .15s;}
+.heart-btn.active{opacity:1;transform:scale(1.15);}
+.pill{display:inline-block;font-size:11px;background:var(--accent-light);color:var(--accent);filter:brightness(0.7);border-radius:20px;padding:2px 9px;margin-inline-end:6px;margin-bottom:4px;}
+[data-theme="dark"] .pill{color:#E7D6A2;filter:none;}
+iframe.map-embed{width:100%;height:180px;border:0;border-radius:12px;margin-bottom:12px;}
+.back-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;cursor:pointer;font-size:14px;color:var(--primary);font-weight:500;}
+.detail-hero{background:linear-gradient(160deg,var(--primary-light),var(--primary));color:#fff;border-radius:var(--radius);padding:18px;margin-bottom:14px;position:relative;box-shadow:var(--shadow);}
+.detail-hero .mname{font-size:20px;font-weight:900;margin-bottom:6px;font-family:'Cairo',sans-serif;}
+.detail-hero .mmeta{font-size:12px;opacity:0.88;margin-bottom:12px;}
+.detail-hero .heart-btn{color:#fff;top:18px;left:18px;}
+.times-table{width:100%;border-collapse:collapse;}
+.times-table td{padding:9px 4px;font-size:14px;border-bottom:1px solid var(--border);}
+.times-table td:last-child{text-align:left;font-weight:700;}
+.times-table tr:last-child td{border-bottom:none;}
+.fac-list{display:flex;flex-wrap:wrap;gap:8px;}
+.fac-chip{font-size:12px;background:var(--bg);color:var(--primary);border-radius:10px;padding:6px 10px;border:1px solid var(--border);}
+.report-link{font-size:13px;color:var(--danger);font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;margin-top:6px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:13px;font-weight:500;margin-bottom:6px;}
+.form-group textarea,.form-group select{width:100%;border:1px solid var(--border);border-radius:10px;padding:10px;font-family:inherit;font-size:14px;background:var(--surface);color:var(--text);resize:vertical;}
+.radio-opt{display:flex;align-items:center;gap:8px;padding:8px 0;font-size:14px;border-bottom:1px solid var(--border);cursor:pointer;}
+.radio-opt input{accent-color:var(--primary);}
+.night-box{background:var(--bg);border-radius:12px;padding:14px;margin-top:12px;}
+.night-box .row{margin-bottom:6px;font-size:13px;}
+.night-box .row b{font-size:14px;}
+.compass-wrap{display:flex;flex-direction:column;align-items:center;padding:20px 0;}
+.compass{width:180px;height:180px;border-radius:50%;border:2px solid var(--primary);position:relative;background:var(--surface);margin-bottom:14px;}
+.compass .needle{position:absolute;top:50%;left:50%;width:2px;height:70px;background:var(--danger);transform-origin:bottom center;}
+.compass .n-label{position:absolute;top:6px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--text-muted);}
+.toast{position:absolute;bottom:96px;left:20px;right:20px;background:var(--primary);color:#fff;padding:12px 16px;border-radius:12px;font-size:13px;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,0.25);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:20;}
+.toast.show{opacity:1;}
+nav.bottom-nav{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;padding:8px 0 10px;z-index:5;}
+nav.bottom-nav button{flex:1;background:none;border:none;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--text-muted);cursor:pointer;}
+nav.bottom-nav button .ic{font-size:19px;}
+nav.bottom-nav button.active{color:var(--primary);font-weight:700;}
+.switch{width:40px;height:22px;border-radius:20px;background:var(--border);position:relative;cursor:pointer;flex-shrink:0;transition:background .2s;}
+.switch.on{background:var(--primary);}
+.switch .knob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;}
+.switch.on .knob{transform:translateX(-18px);}
+.settings-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:14px;}
+.settings-row:last-child{border-bottom:none;}
+.lang-toggle{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:3px;}
+.lang-toggle button{flex:1;border:none;background:none;padding:6px 10px;font-family:inherit;font-size:12px;border-radius:8px;cursor:pointer;color:var(--text-muted);}
+.lang-toggle button.active{background:var(--primary);color:#fff;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted);}
+.empty-state .ic{font-size:36px;display:block;margin-bottom:10px;}
+/* Notifications panel */
+#notif-panel{position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:30;display:none;}
+#notif-panel.show{display:block;}
+#notif-panel .sheet{position:absolute;top:0;left:0;right:0;background:var(--surface);border-radius:0 0 20px 20px;padding:16px;max-height:70%;overflow-y:auto;box-shadow:var(--shadow);animation:fadeIn .2s ease;}
+.notif-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.notif-item:last-child{border-bottom:none;}
+.notif-item .t{font-weight:700;margin-bottom:2px;font-size:13px;}
+.notif-item .time{color:var(--text-muted);font-size:11px;}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+
+  <div id="splash">
+    <div class="brand">وحي</div>
+    <div class="tag" data-i18n="splashTag">دليلك إلى المسجد والصلاة</div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">وحي</div>
+    <div class="icons">
+      <div class="bell" onclick="toggleNotif()">🔔<span class="dot" id="notif-dot"></span></div>
+    </div>
+  </header>
+
+  <div id="notif-panel" onclick="if(event.target===this)toggleNotif()">
+    <div class="sheet">
+      <h2 data-i18n="notifTitle">الإشعارات</h2>
+      <div id="notif-list"></div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <main class="screen" id="screen-home">
+    <div class="demo-note" data-i18n="demoNote">هذا نموذج أولي تجريبي. بيانات المساجد ومواقيت الصلاة هنا لأغراض العرض فقط، وستُعتمد لاحقًا من مصدر رسمي.</div>
+    <div class="muted" style="margin-bottom:10px;" data-i18n="greeting">السلام عليكم</div>
+    <div class="next-prayer">
+      <div class="label" data-i18n="nextPrayerLabel">الصلاة القادمة</div>
+      <div class="name" id="home-next-name">—</div>
+      <div class="time" id="home-next-time">—</div>
+      <div class="countdown" id="home-countdown">—</div>
+    </div>
+    <div class="card pressable" id="home-nearest-card">
+      <h2><span data-i18n="nearestMosque">🕌 أقرب مسجد إليك</span></h2>
+      <div id="home-nearest-body" class="muted" data-i18n="locating">جارٍ تحديد الموقع…</div>
+    </div>
+    <div class="quick-grid">
+      <div class="quick-item" onclick="go('mosques')"><span class="ic">🕌</span><span data-i18n="navMosques">المساجد</span></div>
+      <div class="quick-item" onclick="go('prayer')"><span class="ic">🕐</span><span data-i18n="navPrayer">الصلاة</span></div>
+      <div class="quick-item" onclick="go('prayer');scrollToQibla()"><span class="ic">🧭</span><span data-i18n="qibla">القبلة</span></div>
+      <div class="quick-item" onclick="go('favorites')"><span class="ic">❤️</span><span data-i18n="favorites">المفضلة</span></div>
+    </div>
+  </main>
+
+  <!-- MOSQUES -->
+  <main class="screen" id="screen-mosques" hidden>
+    <h1 style="margin-bottom:12px;" data-i18n="mosquesTitle">المساجد</h1>
+    <div class="search-box">
+      <span>🔍</span>
+      <input id="mosque-search" data-i18n-ph="searchPh" placeholder="ابحث باسم المسجد أو المنطقة" oninput="renderMosqueList()">
+    </div>
+    <div class="toggle-row">
+      <button id="tab-list" class="active" onclick="setMosqueView('list')" data-i18n="listView">القائمة</button>
+      <button id="tab-map" onclick="setMosqueView('map')" data-i18n="mapView">الخريطة</button>
+    </div>
+    <div id="mosque-map-view" hidden>
+      <iframe class="map-embed" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=51.35%2C25.05%2C51.65%2C25.75&layer=mapnik"></iframe>
+      <div class="muted" style="font-size:11px;margin-bottom:10px;" data-i18n="mapNote">خريطة تجريبية لقطر — تحديد مواقع المساجد الفردية سيُضاف في النسخة القادمة.</div>
+    </div>
+    <div id="mosque-list-view"></div>
+  </main>
+
+  <!-- DETAIL -->
+  <main class="screen" id="screen-detail" hidden>
+    <div class="back-row" onclick="go('mosques')"><span id="back-arrow">→</span> <span data-i18n="backToMosques">رجوع للمساجد</span></div>
+    <div class="detail-hero">
+      <button class="heart-btn" id="detail-heart" onclick="toggleFavorite(currentMosque.id, this)">♥</button>
+      <div class="mname" id="d-name">—</div>
+      <div class="mmeta" id="d-meta">—</div>
+      <button class="btn small" style="width:100%;background:#fff;color:var(--primary);" onclick="openDirections()">🧭 <span data-i18n="directions">الاتجاهات</span></button>
+    </div>
+    <div class="card">
+      <h2 data-i18n="todayTimes">مواقيت الصلاة اليوم</h2>
+      <table class="times-table" id="d-times"></table>
+    </div>
+    <div class="card">
+      <h2>🕌 <span data-i18n="fridaySermon">خطبة الجمعة القادمة</span></h2>
+      <div class="pill" data-i18n="sample">تجريبي</div>
+      <div style="font-size:14px;font-weight:500;margin:6px 0;" id="d-sermon-title">—</div>
+      <div class="muted" id="d-sermon-time">—</div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="facilities">المرافق</h2>
+      <div class="fac-list" id="d-facilities"></div>
+      <div class="muted" style="margin-top:10px;font-size:12px;" id="d-capacity"></div>
+    </div>
+    <div class="card">
+      <div class="muted" style="margin-bottom:4px;"><span data-i18n="lastUpdated">آخر تحديث للمعلومات</span>: <span id="d-updated"></span></div>
+      <div class="report-link" onclick="openReport(currentMosque)">⚠️ <span data-i18n="reportWrongInfo">الإبلاغ عن معلومة غير صحيحة</span></div>
+    </div>
+  </main>
+
+  <!-- PRAYER -->
+  <main class="screen" id="screen-prayer" hidden>
+    <h1 style="margin-bottom:12px;" data-i18n="navPrayer">الصلاة</h1>
+    <div class="demo-note" data-i18n="prayerDemoNote">المواقيت محسوبة تلقائيًا لأغراض العرض. النسخة الحكومية تعتمد بيانات وزارة الأوقاف الرسمية.</div>
+    <div class="next-prayer">
+      <div class="label" data-i18n="nextPrayerLabel">الصلاة القادمة</div>
+      <div class="name" id="p-next-name">—</div>
+      <div class="time" id="p-next-time">—</div>
+      <div class="countdown" id="p-countdown">—</div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="todayTimes2">مواقيت اليوم</h2>
+      <table class="times-table" id="p-times"></table>
+      <div class="night-box" id="night-box">
+        <h2 style="margin-bottom:8px;">🌙 <span data-i18n="lastThird">الثلث الأخير من الليل</span></h2>
+        <div class="row"><span data-i18n="midnight">منتصف الليل</span><b id="p-midnight">—</b></div>
+        <div class="row"><span data-i18n="thirdStart">يبدأ الثلث الأخير</span><b id="p-third-start">—</b></div>
+        <div class="row"><span data-i18n="thirdEnd">ينتهي (الفجر)</span><b id="p-third-end">—</b></div>
+        <div class="settings-row" style="border:none;padding-top:8px;">
+          <span data-i18n="nightAlert">تنبيه الثلث الأخير</span>
+          <div class="switch" id="night-switch" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="qibla-card">
+      <h2>🧭 <span data-i18n="qiblaDir">اتجاه القبلة</span></h2>
+      <div class="compass-wrap">
+        <div class="compass">
+          <div class="n-label" data-i18n="north">شمال</div>
+          <div class="needle" id="qibla-needle"></div>
+        </div>
+        <div class="muted" id="qibla-deg">—</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FAVORITES -->
+  <main class="screen" id="screen-favorites" hidden>
+    <h1 style="margin-bottom:12px;" data-i18n="favorites">المفضلة</h1>
+    <div id="fav-list"></div>
+  </main>
+
+  <!-- REPORT -->
+  <main class="screen" id="screen-report" hidden>
+    <div class="back-row" onclick="goBack()"><span id="back-arrow2">→</span> <span data-i18n="back">رجوع</span></div>
+    <h1 style="margin-bottom:4px;" data-i18n="reportTitle">الإبلاغ عن خطأ</h1>
+    <div class="muted" style="margin-bottom:14px;" id="report-mosque-label">—</div>
+    <div class="form-group">
+      <label data-i18n="reportWhat">ما المشكلة؟</label>
+      <label class="radio-opt"><input type="radio" name="rtype" checked> <span data-i18n="r1">موقع المسجد غير صحيح</span></label>
+      <label class="radio-opt"><input type="radio" name="rtype"> <span data-i18n="r2">معلومات المسجد غير محدثة</span></label>
+      <label class="radio-opt"><input type="radio" name="rtype"> <span data-i18n="r3">مرفق غير متوفر فعليًا</span></label>
+      <label class="radio-opt"><input type="radio" name="rtype"> <span data-i18n="r4">مشكلة أخرى</span></label>
+    </div>
+    <div class="form-group">
+      <label data-i18n="reportDetails">تفاصيل إضافية (اختياري)</label>
+      <textarea rows="4" data-i18n-ph="reportPh" placeholder="اكتب وصفًا مختصرًا للمشكلة"></textarea>
+    </div>
+    <button class="btn" onclick="submitReport()" data-i18n="sendReport">إرسال البلاغ</button>
+  </main>
+
+  <!-- MORE -->
+  <main class="screen" id="screen-more" hidden>
+    <h1 style="margin-bottom:14px;" data-i18n="more">المزيد</h1>
+    <div class="card">
+      <div class="settings-row">
+        <span data-i18n="language">اللغة</span>
+        <div class="lang-toggle">
+          <button id="lang-ar" class="active" onclick="applyLanguage('ar')">AR</button>
+          <button id="lang-en" onclick="applyLanguage('en')">EN</button>
+        </div>
+      </div>
+      <div class="settings-row"><span data-i18n="prayerNotif">إشعارات الصلاة</span>
+        <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+      </div>
+      <div class="settings-row"><span data-i18n="darkMode">الوضع الليلي</span>
+        <div class="switch" id="dark-switch" onclick="toggleDark(this)"><div class="knob"></div></div>
+      </div>
+      <div class="settings-row" onclick="openReport(null)" style="cursor:pointer;">
+        <span data-i18n="reportGeneral">⚠️ الإبلاغ عن مشكلة عامة</span><span>›</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="aboutTitle">عن «وحي»</h2>
+      <div class="muted" data-i18n="aboutBody">نموذج أولي مستقل، غير رسمي، لاستكشاف فكرة منصة موحدة لخدمات المساجد. غير تابع لوزارة الأوقاف والشؤون الإسلامية.</div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <nav class="bottom-nav">
+    <button data-s="home" class="active" onclick="go('home')"><span class="ic">🏠</span><span data-i18n="navHome">الرئيسية</span></button>
+    <button data-s="mosques" onclick="go('mosques')"><span class="ic">🕌</span><span data-i18n="navMosques">المساجد</span></button>
+    <button data-s="prayer" onclick="go('prayer')"><span class="ic">🕐</span><span data-i18n="navPrayer">الصلاة</span></button>
+    <button data-s="favorites" onclick="go('favorites')"><span class="ic">❤️</span><span data-i18n="favorites">المفضلة</span></button>
+    <button data-s="more" onclick="go('more')"><span class="ic">⋯</span><span data-i18n="more">المزيد</span></button>
+  </nav>
+</div>
+
+<script>
+// ================= i18n =================
+const STR = {
+  ar:{splashTag:'دليلك إلى المسجد والصلاة',notifTitle:'الإشعارات',demoNote:'هذا نموذج أولي تجريبي. بيانات المساجد ومواقيت الصلاة هنا لأغراض العرض فقط، وستُعتمد لاحقًا من مصدر رسمي.',greeting:'السلام عليكم',nextPrayerLabel:'الصلاة القادمة',nearestMosque:'🕌 أقرب مسجد إليك',locating:'جارٍ تحديد الموقع…',navHome:'الرئيسية',navMosques:'المساجد',navPrayer:'الصلاة',favorites:'المفضلة',more:'المزيد',qibla:'القبلة',mosquesTitle:'المساجد',searchPh:'ابحث باسم المسجد أو المنطقة',listView:'القائمة',mapView:'الخريطة',mapNote:'خريطة تجريبية لقطر — تحديد مواقع المساجد الفردية سيُضاف في النسخة القادمة.',backToMosques:'رجوع للمساجد',directions:'الاتجاهات',todayTimes:'مواقيت الصلاة اليوم',fridaySermon:'خطبة الجمعة القادمة',sample:'تجريبي',facilities:'المرافق',lastUpdated:'آخر تحديث للمعلومات',reportWrongInfo:'الإبلاغ عن معلومة غير صحيحة',prayerDemoNote:'المواقيت محسوبة تلقائيًا لأغراض العرض. النسخة الحكومية تعتمد بيانات وزارة الأوقاف الرسمية.',todayTimes2:'مواقيت اليوم',lastThird:'الثلث الأخير من الليل',midnight:'منتصف الليل',thirdStart:'يبدأ الثلث الأخير',thirdEnd:'ينتهي (الفجر)',nightAlert:'تنبيه الثلث الأخير',qiblaDir:'اتجاه القبلة',north:'شمال',back:'رجوع',reportTitle:'الإبلاغ عن خطأ',reportWhat:'ما المشكلة؟',r1:'موقع المسجد غير صحيح',r2:'معلومات المسجد غير محدثة',r3:'مرفق غير متوفر فعليًا',r4:'مشكلة أخرى',reportDetails:'تفاصيل إضافية (اختياري)',reportPh:'اكتب وصفًا مختصرًا للمشكلة',sendReport:'إرسال البلاغ',language:'اللغة',prayerNotif:'إشعارات الصلاة',darkMode:'الوضع الليلي',reportGeneral:'⚠️ الإبلاغ عن مشكلة عامة',aboutTitle:'عن «وحي»',aboutBody:'نموذج أولي مستقل، غير رسمي، لاستكشاف فكرة منصة موحدة لخدمات المساجد. غير تابع لوزارة الأوقاف والشؤون الإسلامية.',noFav:'لا توجد مساجد في المفضلة بعد',noFavSub:'اضغط ♥ على أي مسجد لإضافته هنا',km:'كم',m:'م',remaining:'متبقي',h:'س',min:'د',openPage:'فتح صفحة المسجد',generalReport:'بلاغ عام (بدون مسجد محدد)',regarding:'بخصوص',reportReceived:'تم استلام البلاغ — رقم البلاغ #',noResults:'لا توجد نتائج',fajr:'الفجر',sunrise:'الشروق',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء',cap_small:'سعة صغيرة',cap_medium:'سعة متوسطة',cap_large:'سعة كبيرة'},
+  en:{splashTag:'Your guide to the mosque & prayer',notifTitle:'Notifications',demoNote:'This is a demo prototype. Mosque data and prayer times are for demonstration only and will later be sourced officially.',greeting:'Peace be upon you',nextPrayerLabel:'Next Prayer',nearestMosque:'🕌 Nearest mosque to you',locating:'Locating…',navHome:'Home',navMosques:'Mosques',navPrayer:'Prayer',favorites:'Favorites',more:'More',qibla:'Qibla',mosquesTitle:'Mosques',searchPh:'Search by mosque name or area',listView:'List',mapView:'Map',mapNote:'Demo map of Qatar — individual mosque pins coming in the next version.',backToMosques:'Back to Mosques',directions:'Directions',todayTimes:'Today\'s Prayer Times',fridaySermon:'Upcoming Friday Sermon',sample:'Sample',facilities:'Facilities',lastUpdated:'Last updated',reportWrongInfo:'Report incorrect information',prayerDemoNote:'Times are auto-calculated for demo purposes. The government version will use official Ministry of Awqaf data.',todayTimes2:'Today\'s Times',lastThird:'Last Third of the Night',midnight:'Midnight',thirdStart:'Last third begins',thirdEnd:'Ends (Fajr)',nightAlert:'Last-third alert',qiblaDir:'Qibla Direction',north:'North',back:'Back',reportTitle:'Report an Issue',reportWhat:'What\'s the problem?',r1:'Mosque location is incorrect',r2:'Mosque info is outdated',r3:'A listed facility is unavailable',r4:'Other issue',reportDetails:'Additional details (optional)',reportPh:'Briefly describe the issue',sendReport:'Submit Report',language:'Language',prayerNotif:'Prayer notifications',darkMode:'Dark mode',reportGeneral:'⚠️ Report a general issue',aboutTitle:'About "Wahy"',aboutBody:'An independent, unofficial prototype exploring a unified mosque-services platform idea. Not affiliated with the Ministry of Awqaf and Islamic Affairs.',noFav:'No favorite mosques yet',noFavSub:'Tap ♥ on any mosque to add it here',km:'km',m:'m',remaining:'Remaining',h:'h',min:'min',openPage:'Open mosque page',generalReport:'General report (no mosque specified)',regarding:'Regarding',reportReceived:'Report received — ticket #',noResults:'No results',fajr:'Fajr',sunrise:'Sunrise',dhuhr:'Dhuhr',asr:'Asr',maghrib:'Maghrib',isha:'Isha',cap_small:'Small capacity',cap_medium:'Medium capacity',cap_large:'Large capacity'}
+};
+let currentLang='ar';
+function t(k){ return STR[currentLang][k] || k; }
+
+// ================= Mock data (fictional, for demo only) =================
+const MOSQUES = [
+  {id:1,name:{ar:'مسجد الفردوس',en:'Al Firdous Mosque'},area:{ar:'الدوحة — الدفنة',en:'Doha — Dafna'},lat:25.3210,lon:51.5310,fac:['women','parking','toilets','ac'],cap:'large',sermon:{ar:'فضل الصبر عند البلاء',en:'The Virtue of Patience in Hardship'},updated:'2026-09-12'},
+  {id:2,name:{ar:'مسجد النور',en:'Al Noor Mosque'},area:{ar:'الريان',en:'Al Rayyan'},lat:25.2919,lon:51.4244,fac:['women','accessibility','ac'],cap:'medium',sermon:{ar:'حسن الجوار وأثره في المجتمع',en:'Good Neighborliness and its Social Impact'},updated:'2026-09-08'},
+  {id:3,name:{ar:'مسجد السلام',en:'Al Salam Mosque'},area:{ar:'الوكرة',en:'Al Wakrah'},lat:25.1650,lon:51.6032,fac:['parking','toilets'],cap:'small',sermon:{ar:'آداب طلب العلم',en:'Etiquette of Seeking Knowledge'},updated:'2026-09-01'},
+  {id:4,name:{ar:'مسجد الهداية',en:'Al Hidaya Mosque'},area:{ar:'الخور',en:'Al Khor'},lat:25.6809,lon:51.4972,fac:['women','parking','ac','accessibility'],cap:'large',sermon:{ar:'بر الوالدين',en:'Kindness to Parents'},updated:'2026-08-15'},
+  {id:5,name:{ar:'مسجد التقوى',en:'Al Taqwa Mosque'},area:{ar:'الدوحة — الوست باي',en:'Doha — West Bay'},lat:25.3196,lon:51.5262,fac:['women','ac'],cap:'medium',sermon:{ar:'شكر النعم',en:'Gratitude for Blessings'},updated:'2026-09-14'},
+  {id:6,name:{ar:'مسجد الإيمان',en:'Al Iman Mosque'},area:{ar:'لوسيل',en:'Lusail'},lat:25.4100,lon:51.4900,fac:['women','parking','toilets','ac','accessibility'],cap:'large',sermon:{ar:'الوسطية في الإسلام',en:'Moderation in Islam'},updated:'2026-09-10'},
+  {id:7,name:{ar:'مسجد الرحمة',en:'Al Rahma Mosque'},area:{ar:'الشمال',en:'Al Shamal'},lat:26.1200,lon:51.2100,fac:['parking','ac'],cap:'small',sermon:{ar:'حفظ اللسان',en:'Guarding the Tongue'},updated:'2026-08-28'},
+  {id:8,name:{ar:'مسجد الفتح',en:'Al Fath Mosque'},area:{ar:'أم صلال',en:'Umm Salal'},lat:25.4100,lon:51.4050,fac:['women','parking','toilets'],cap:'medium',sermon:{ar:'الإخلاص في العمل',en:'Sincerity in Work'},updated:'2026-09-05'},
+];
+const FAC_LABELS={women:{ar:'مصلى نساء',en:'Women\'s prayer area'},parking:{ar:'مواقف سيارات',en:'Parking'},toilets:{ar:'دورات مياه',en:'Restrooms'},ac:{ar:'تكييف',en:'Air conditioning'},accessibility:{ar:'وصول ذوي الإعاقة',en:'Accessibility access'}};
+const NOTIFS=[
+  {ar:{t:'الصلاة القادمة العصر بعد 20 دقيقة',time:'اليوم'},en:{t:'Next prayer Asr in 20 minutes',time:'Today'}},
+  {ar:{t:'🌙 الثلث الأخير يبدأ الليلة 02:41 ص',time:'اليوم'},en:{t:'🌙 Last third of night begins tonight 2:41 AM',time:'Today'}},
+  {ar:{t:'تم تحديث بيانات مسجد الفردوس',time:'أمس'},en:{t:'Al Firdous Mosque info was updated',time:'Yesterday'}},
+];
+
+let userLoc={lat:25.2854,lon:51.5310};
+let currentMosque=null, prevScreen='home';
+let todayTimings=null, tomorrowTimings=null;
+let favorites=JSON.parse(localStorage.getItem('wahy-favs')||'[]');
+
+function toRad(d){return d*Math.PI/180;}
+function haversine(lat1,lon1,lat2,lon2){const R=6371;const dLat=toRad(lat2-lat1),dLon=toRad(lon2-lon1);const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
+function distanceLabel(m){const d=haversine(userLoc.lat,userLoc.lon,m.lat,m.lon);return d<1?Math.round(d*1000)+' '+t('m'):d.toFixed(1)+' '+t('km');}
+function sortedMosques(){return [...MOSQUES].sort((a,b)=>haversine(userLoc.lat,userLoc.lon,a.lat,a.lon)-haversine(userLoc.lat,userLoc.lon,b.lat,b.lon));}
+
+// ================= Navigation =================
+function go(screen){
+  document.querySelectorAll('.screen').forEach(s=>s.hidden=true);
+  document.getElementById('screen-'+screen).hidden=false;
+  document.querySelectorAll('nav.bottom-nav button').forEach(b=>b.classList.toggle('active', b.dataset.s===screen));
+  prevScreen=screen;
+  if(screen==='mosques') renderMosqueList();
+  if(screen==='favorites') renderFavorites();
+}
+function goBack(){ go(prevScreen==='report'?'home':prevScreen); }
+function scrollToQibla(){ setTimeout(()=>document.getElementById('qibla-card').scrollIntoView({behavior:'smooth'}),150); }
+
+// ================= Notifications =================
+function renderNotifs(){
+  document.getElementById('notif-list').innerHTML = NOTIFS.map(n=>`<div class="notif-item"><div class="t">${n[currentLang].t}</div><div class="time">${n[currentLang].time}</div></div>`).join('');
+}
+function toggleNotif(){
+  document.getElementById('notif-panel').classList.toggle('show');
+  document.getElementById('notif-dot').style.display='none';
+}
+
+// ================= Favorites =================
+function saveFavs(){ localStorage.setItem('wahy-favs', JSON.stringify(favorites)); }
+function isFav(id){ return favorites.includes(id); }
+function toggleFavorite(id, el){
+  if(isFav(id)) favorites=favorites.filter(x=>x!==id); else favorites.push(id);
+  saveFavs();
+  document.querySelectorAll('.heart-btn').forEach(b=>{
+    if(b.dataset.mid==id) b.classList.toggle('active', isFav(id));
+  });
+  if(el){ el.classList.toggle('active', isFav(id)); }
+  if(!document.getElementById('screen-favorites').hidden) renderFavorites();
+}
+function renderFavorites(){
+  const items=MOSQUES.filter(m=>favorites.includes(m.id));
+  const el=document.getElementById('fav-list');
+  if(!items.length){
+    el.innerHTML=`<div class="empty-state"><span class="ic">🤍</span><div>${t('noFav')}</div><div class="muted" style="margin-top:6px;">${t('noFavSub')}</div></div>`;
+    return;
+  }
+  el.innerHTML = items.map(m=>mosqueCardHTML(m)).join('');
+}
+
+// ================= Mosques list =================
+function mosqueCardHTML(m){
+  const fav=isFav(m.id);
+  return `<div class="card mosque-card pressable" onclick="openMosque(${m.id})">
+    <button class="heart-btn ${fav?'active':''}" data-mid="${m.id}" onclick="event.stopPropagation();toggleFavorite(${m.id})">♥</button>
+    <div class="mname">${m.name[currentLang]}</div>
+    <div class="mmeta">${m.area[currentLang]} · 📍 ${distanceLabel(m)}</div>
+    <div class="fac-list">${m.fac.slice(0,3).map(f=>`<span class="fac-chip">${FAC_LABELS[f][currentLang]}</span>`).join('')}</div>
+  </div>`;
+}
+function setMosqueView(v){
+  document.getElementById('tab-list').classList.toggle('active', v==='list');
+  document.getElementById('tab-map').classList.toggle('active', v==='map');
+  document.getElementById('mosque-list-view').hidden = v!=='list';
+  document.getElementById('mosque-map-view').hidden = v!=='map';
+}
+function renderMosqueList(){
+  const q=(document.getElementById('mosque-search').value||'').trim();
+  const list=sortedMosques().filter(m=>!q || m.name[currentLang].includes(q) || m.area[currentLang].includes(q) || m.name.ar.includes(q) || m.area.ar.includes(q));
+  document.getElementById('mosque-list-view').innerHTML = list.map(mosqueCardHTML).join('') || `<div class="muted">${t('noResults')}</div>`;
+}
+
+// ================= Detail =================
+function openMosque(id){
+  currentMosque=MOSQUES.find(m=>m.id===id);
+  document.getElementById('d-name').textContent=currentMosque.name[currentLang];
+  document.getElementById('d-meta').textContent=currentMosque.area[currentLang]+' · '+distanceLabel(currentMosque);
+  document.getElementById('d-updated').textContent=currentMosque.updated;
+  document.getElementById('d-facilities').innerHTML=currentMosque.fac.map(f=>`<span class="fac-chip">${FAC_LABELS[f][currentLang]}</span>`).join('');
+  document.getElementById('d-capacity').textContent='🪑 '+t('cap_'+currentMosque.cap);
+  document.getElementById('d-sermon-title').textContent='«'+currentMosque.sermon[currentLang]+'»';
+  document.getElementById('d-sermon-time').textContent=(currentLang==='ar'?'الجمعة — 12:15 م':'Friday — 12:15 PM');
+  const heart=document.getElementById('detail-heart');
+  heart.dataset.mid=currentMosque.id;
+  heart.classList.toggle('active', isFav(currentMosque.id));
+  if(todayTimings) renderTimesTable('d-times', todayTimings);
+  go('detail');
+}
+function openDirections(){ if(currentMosque) window.open(`https://www.google.com/maps/dir/?api=1&destination=${currentMosque.lat},${currentMosque.lon}`,'_blank'); }
+
+// ================= Report =================
+function openReport(mosque){
+  document.getElementById('report-mosque-label').textContent = mosque ? (t('regarding')+': '+mosque.name[currentLang]) : t('generalReport');
+  prevScreen = document.querySelector('.screen:not([hidden])').id.replace('screen-','');
+  go('report');
+}
+function submitReport(){
+  const id=Math.floor(10000+Math.random()*89999);
+  showToast(t('reportReceived')+id);
+  setTimeout(()=>go(currentMosque?'detail':'home'), 900);
+}
+function showToast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2600); }
+function toggleSwitch(el){ el.classList.toggle('on'); }
+
+// ================= Dark mode =================
+function toggleDark(el){
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  setTheme(!isDark);
+}
+function setTheme(dark){
+  document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+  document.getElementById('dark-switch').classList.toggle('on', dark);
+  localStorage.setItem('wahy-theme', dark?'dark':'light');
+}
+
+// ================= Language =================
+function applyLanguage(lang){
+  currentLang=lang;
+  localStorage.setItem('wahy-lang', lang);
+  document.documentElement.lang=lang;
+  document.documentElement.dir = lang==='ar'?'rtl':'ltr';
+  document.getElementById('lang-ar').classList.toggle('active', lang==='ar');
+  document.getElementById('lang-en').classList.toggle('active', lang==='en');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent=t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ el.placeholder=t(el.dataset.i18nPh); });
+  document.getElementById('back-arrow').textContent = lang==='ar'?'→':'←';
+  document.getElementById('back-arrow2').textContent = lang==='ar'?'→':'←';
+  renderNotifs();
+  renderNearest();
+  if(!document.getElementById('screen-mosques').hidden) renderMosqueList();
+  if(!document.getElementById('screen-favorites').hidden) renderFavorites();
+  if(currentMosque && !document.getElementById('screen-detail').hidden) openMosque(currentMosque.id);
+  if(todayTimings){ renderTimesTable('p-times', todayTimings); updateNextPrayer(); }
+}
+
+// ================= Prayer times =================
+function fmtTime(hhmm){ const [h,m]=hhmm.split(':').map(Number); const d=new Date(); d.setHours(h,m,0,0); return d.toLocaleTimeString(currentLang==='ar'?'ar-EG':'en-US',{hour:'2-digit',minute:'2-digit',hour12:true}); }
+function renderTimesTable(elId,tm){
+  const rows=[[t('fajr'),tm.Fajr],[t('sunrise'),tm.Sunrise],[t('dhuhr'),tm.Dhuhr],[t('asr'),tm.Asr],[t('maghrib'),tm.Maghrib],[t('isha'),tm.Isha]];
+  document.getElementById(elId).innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${fmtTime(r[1])}</td></tr>`).join('');
+}
+function parseTimeToday(hhmm,offset){ const [h,m]=hhmm.split(':').map(Number); const d=new Date(); d.setDate(d.getDate()+(offset||0)); d.setHours(h,m,0,0); return d; }
+function updateNextPrayer(){
+  if(!todayTimings) return;
+  const order=[[t('fajr'),todayTimings.Fajr],[t('dhuhr'),todayTimings.Dhuhr],[t('asr'),todayTimings.Asr],[t('maghrib'),todayTimings.Maghrib],[t('isha'),todayTimings.Isha]];
+  const now=new Date(); let next=null;
+  for(const [name,tm] of order){ const dt=parseTimeToday(tm,0); if(dt>now){ next=[name,dt]; break; } }
+  if(!next) next=[t('fajr'), parseTimeToday(tomorrowTimings?tomorrowTimings.Fajr:todayTimings.Fajr,1)];
+  const diffMs=next[1]-now; const hh=Math.floor(diffMs/3600000), mm=Math.floor((diffMs%3600000)/60000);
+  const timeStr=next[1].toLocaleTimeString(currentLang==='ar'?'ar-EG':'en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+  const cdStr=`${t('remaining')} ${hh>0?hh+' '+t('h')+' ':''}${mm} ${t('min')}`;
+  document.getElementById('home-next-name').textContent=next[0];
+  document.getElementById('home-next-time').textContent=timeStr;
+  document.getElementById('home-countdown').textContent=cdStr;
+  document.getElementById('p-next-name').textContent=next[0];
+  document.getElementById('p-next-time').textContent=timeStr;
+  document.getElementById('p-countdown').textContent=cdStr;
+}
+function computeNight(){
+  if(!todayTimings||!tomorrowTimings) return;
+  const maghrib=parseTimeToday(todayTimings.Maghrib,0);
+  const fajrTomorrow=parseTimeToday(tomorrowTimings.Fajr,1);
+  const durationMs=fajrTomorrow-maghrib;
+  const midnight=new Date(maghrib.getTime()+durationMs/2);
+  const thirdStart=new Date(maghrib.getTime()+durationMs*2/3);
+  const opt={hour:'2-digit',minute:'2-digit',hour12:true};
+  const loc=currentLang==='ar'?'ar-EG':'en-US';
+  document.getElementById('p-midnight').textContent=midnight.toLocaleTimeString(loc,opt);
+  document.getElementById('p-third-start').textContent=thirdStart.toLocaleTimeString(loc,opt);
+  document.getElementById('p-third-end').textContent=fajrTomorrow.toLocaleTimeString(loc,opt);
+}
+function dateStr(offset){ const d=new Date(); d.setDate(d.getDate()+(offset||0)); const dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0'),yyyy=d.getFullYear(); return `${dd}-${mm}-${yyyy}`; }
+async function loadPrayerTimes(){
+  try{
+    const base='https://api.aladhan.com/v1/timings/';
+    const [r1,r2]=await Promise.all([
+      fetch(`${base}${dateStr(0)}?latitude=${userLoc.lat}&longitude=${userLoc.lon}&method=4`),
+      fetch(`${base}${dateStr(1)}?latitude=${userLoc.lat}&longitude=${userLoc.lon}&method=4`)
+    ]);
+    const j1=await r1.json(), j2=await r2.json();
+    todayTimings=j1.data.timings; tomorrowTimings=j2.data.timings;
+    renderTimesTable('p-times', todayTimings);
+    if(currentMosque) renderTimesTable('d-times', todayTimings);
+    updateNextPrayer(); computeNight();
+    setInterval(updateNextPrayer,60000);
+  }catch(e){
+    document.getElementById('p-times').innerHTML=`<tr><td colspan="2" class="muted">—</td></tr>`;
+  }
+}
+
+// ================= Qibla =================
+function computeQibla(){
+  const kLat=toRad(21.4225), kLon=toRad(39.8262);
+  const lat=toRad(userLoc.lat), lon=toRad(userLoc.lon);
+  const dLon=kLon-lon;
+  const y=Math.sin(dLon)*Math.cos(kLat);
+  const x=Math.cos(lat)*Math.sin(kLat)-Math.sin(lat)*Math.cos(kLat)*Math.cos(dLon);
+  let brng=Math.atan2(y,x)*180/Math.PI; brng=(brng+360)%360;
+  document.getElementById('qibla-needle').style.transform=`translate(-50%,-100%) rotate(${brng}deg)`;
+  document.getElementById('qibla-deg').textContent=`${Math.round(brng)}°`;
+}
+
+// ================= Home nearest =================
+function renderNearest(){
+  const m=sortedMosques()[0];
+  document.getElementById('home-nearest-body').innerHTML=`
+    <div class="mname">${m.name[currentLang]}</div>
+    <div class="mmeta">📍 ${distanceLabel(m)} · ${m.area[currentLang]}</div>
+    <button class="btn small" style="margin-top:8px;" onclick="openMosque(${m.id})">${t('openPage')}</button>`;
+}
+
+// ================= Init =================
+function initLocationAndLoad(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      pos=>{ userLoc={lat:pos.coords.latitude, lon:pos.coords.longitude}; afterLocation(); },
+      ()=>{ afterLocation(); }, {timeout:4000});
+  } else afterLocation();
+}
+function afterLocation(){ renderNearest(); computeQibla(); loadPrayerTimes(); }
+
+(function init(){
+  const savedTheme = localStorage.getItem('wahy-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light');
+  setTheme(savedTheme==='dark');
+  const savedLang = localStorage.getItem('wahy-lang') || 'ar';
+  applyLanguage(savedLang);
+  renderNotifs();
+  initLocationAndLoad();
+  setTimeout(()=>document.getElementById('splash').classList.add('hide'), 1600);
+  document.getElementById('splash').addEventListener('click', ()=>document.getElementById('splash').classList.add('hide'));
+})();
+</script>
+</body>
+</html>
