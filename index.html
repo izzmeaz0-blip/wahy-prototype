@@ -4,9 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>وحي — دليل المساجد</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0E3B36">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
 :root{
   --primary:#0E3B36;
@@ -67,6 +72,8 @@ header.topbar{
   display:flex;align-items:center;justify-content:space-between;position:relative;z-index:5;
 }
 header.topbar .brand{font-size:22px;font-weight:900;letter-spacing:1px;}
+.brand-mark-sm{width:26px;height:26px;flex-shrink:0;}
+.brand-mark-lg{width:76px;height:76px;}
 header.topbar .icons{display:flex;gap:14px;align-items:center;}
 header.topbar .bell{font-size:19px;opacity:0.9;cursor:pointer;position:relative;}
 header.topbar .dot{position:absolute;top:-3px;left:-4px;width:8px;height:8px;background:var(--danger);border-radius:50%;}
@@ -109,6 +116,15 @@ h2{font-size:15px;font-weight:700;margin-bottom:10px;}
 .pill{display:inline-block;font-size:11px;background:var(--accent-light);color:var(--accent);filter:brightness(0.7);border-radius:20px;padding:2px 9px;margin-inline-end:6px;margin-bottom:4px;}
 [data-theme="dark"] .pill{color:#E7D6A2;filter:none;}
 iframe.map-embed{width:100%;height:180px;border:0;border-radius:12px;margin-bottom:12px;}
+#real-map{width:100%;height:260px;border-radius:12px;margin-bottom:10px;z-index:1;}
+.leaflet-popup-content-wrapper{background:var(--surface);color:var(--text);border-radius:10px;}
+.leaflet-popup-tip{background:var(--surface);}
+.map-popup .mname{font-weight:700;font-size:13px;margin-bottom:4px;font-family:'Cairo',sans-serif;}
+.map-popup button{margin-top:6px;background:var(--primary);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-family:inherit;font-size:12px;cursor:pointer;}
+.error-banner{background:#F6DCD3;color:#7A3018;font-size:12px;padding:10px 12px;border-radius:10px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+[data-theme="dark"] .error-banner{background:#3A241D;color:#F0B69B;}
+.error-banner button{background:none;border:1px solid currentColor;color:inherit;border-radius:8px;padding:5px 10px;font-size:11px;font-family:inherit;cursor:pointer;flex-shrink:0;}
+.location-note{font-size:11px;color:var(--text-muted);margin-bottom:10px;}
 .back-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;cursor:pointer;font-size:14px;color:var(--primary);font-weight:500;}
 .detail-hero{background:linear-gradient(160deg,var(--primary-light),var(--primary));color:#fff;border-radius:var(--radius);padding:18px;margin-bottom:14px;position:relative;box-shadow:var(--shadow);}
 .detail-hero .mname{font-size:20px;font-weight:900;margin-bottom:6px;font-family:'Cairo',sans-serif;}
@@ -164,12 +180,30 @@ nav.bottom-nav button.active{color:var(--primary);font-weight:700;}
 <div class="phone" id="phone">
 
   <div id="splash">
-    <div class="brand">وحي</div>
+    <svg class="brand-mark-lg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" rx="22" fill="#F1EFE6"/>
+      <rect x="45" y="8" width="10" height="12" rx="2" fill="#0E3B36"/>
+      <path d="M50 17 C 36 17 27 28 27 42 L27 74 L73 74 L73 42 C73 28 64 17 50 17 Z" fill="#0E3B36"/>
+      <rect x="27" y="74" width="46" height="7" rx="2" fill="#0E3B36"/>
+      <circle cx="70" cy="32" r="9" fill="#D8B565"/>
+      <circle cx="74" cy="29" r="8" fill="#F1EFE6"/>
+    </svg>
+    <div class="brand" style="margin-top:12px;">وحي</div>
     <div class="tag" data-i18n="splashTag">دليلك إلى المسجد والصلاة</div>
   </div>
 
   <header class="topbar">
-    <div class="brand">وحي</div>
+    <div style="display:flex;align-items:center;gap:9px;">
+      <svg class="brand-mark-sm" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="#F1EFE6"/>
+        <rect x="45" y="8" width="10" height="12" rx="2" fill="#0E3B36"/>
+        <path d="M50 17 C 36 17 27 28 27 42 L27 74 L73 74 L73 42 C73 28 64 17 50 17 Z" fill="#0E3B36"/>
+        <rect x="27" y="74" width="46" height="7" rx="2" fill="#0E3B36"/>
+        <circle cx="70" cy="32" r="9" fill="#D8B565"/>
+        <circle cx="74" cy="29" r="8" fill="#F1EFE6"/>
+      </svg>
+      <div class="brand">وحي</div>
+    </div>
     <div class="icons">
       <div class="bell" onclick="toggleNotif()">🔔<span class="dot" id="notif-dot"></span></div>
     </div>
@@ -186,6 +220,7 @@ nav.bottom-nav button.active{color:var(--primary);font-weight:700;}
   <main class="screen" id="screen-home">
     <div class="demo-note" data-i18n="demoNote">هذا نموذج أولي تجريبي. بيانات المساجد ومواقيت الصلاة هنا لأغراض العرض فقط، وستُعتمد لاحقًا من مصدر رسمي.</div>
     <div class="muted" style="margin-bottom:10px;" data-i18n="greeting">السلام عليكم</div>
+    <div class="location-note" id="location-note" hidden></div>
     <div class="next-prayer">
       <div class="label" data-i18n="nextPrayerLabel">الصلاة القادمة</div>
       <div class="name" id="home-next-name">—</div>
@@ -216,8 +251,8 @@ nav.bottom-nav button.active{color:var(--primary);font-weight:700;}
       <button id="tab-map" onclick="setMosqueView('map')" data-i18n="mapView">الخريطة</button>
     </div>
     <div id="mosque-map-view" hidden>
-      <iframe class="map-embed" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=51.35%2C25.05%2C51.65%2C25.75&layer=mapnik"></iframe>
-      <div class="muted" style="font-size:11px;margin-bottom:10px;" data-i18n="mapNote">خريطة تجريبية لقطر — تحديد مواقع المساجد الفردية سيُضاف في النسخة القادمة.</div>
+      <div id="real-map"></div>
+      <div class="muted" style="font-size:11px;margin-bottom:10px;" data-i18n="mapNote2">اضغط أي علامة لعرض معلومات المسجد.</div>
     </div>
     <div id="mosque-list-view"></div>
   </main>
@@ -256,6 +291,10 @@ nav.bottom-nav button.active{color:var(--primary);font-weight:700;}
   <main class="screen" id="screen-prayer" hidden>
     <h1 style="margin-bottom:12px;" data-i18n="navPrayer">الصلاة</h1>
     <div class="demo-note" data-i18n="prayerDemoNote">المواقيت محسوبة تلقائيًا لأغراض العرض. النسخة الحكومية تعتمد بيانات وزارة الأوقاف الرسمية.</div>
+    <div class="error-banner" id="prayer-error-banner" hidden>
+      <span id="prayer-error-text"></span>
+      <button onclick="loadPrayerTimes()" data-i18n="retry">إعادة المحاولة</button>
+    </div>
     <div class="next-prayer">
       <div class="label" data-i18n="nextPrayerLabel">الصلاة القادمة</div>
       <div class="name" id="p-next-name">—</div>
@@ -351,11 +390,12 @@ nav.bottom-nav button.active{color:var(--primary);font-weight:700;}
   </nav>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 // ================= i18n =================
 const STR = {
-  ar:{splashTag:'دليلك إلى المسجد والصلاة',notifTitle:'الإشعارات',demoNote:'هذا نموذج أولي تجريبي. بيانات المساجد ومواقيت الصلاة هنا لأغراض العرض فقط، وستُعتمد لاحقًا من مصدر رسمي.',greeting:'السلام عليكم',nextPrayerLabel:'الصلاة القادمة',nearestMosque:'🕌 أقرب مسجد إليك',locating:'جارٍ تحديد الموقع…',navHome:'الرئيسية',navMosques:'المساجد',navPrayer:'الصلاة',favorites:'المفضلة',more:'المزيد',qibla:'القبلة',mosquesTitle:'المساجد',searchPh:'ابحث باسم المسجد أو المنطقة',listView:'القائمة',mapView:'الخريطة',mapNote:'خريطة تجريبية لقطر — تحديد مواقع المساجد الفردية سيُضاف في النسخة القادمة.',backToMosques:'رجوع للمساجد',directions:'الاتجاهات',todayTimes:'مواقيت الصلاة اليوم',fridaySermon:'خطبة الجمعة القادمة',sample:'تجريبي',facilities:'المرافق',lastUpdated:'آخر تحديث للمعلومات',reportWrongInfo:'الإبلاغ عن معلومة غير صحيحة',prayerDemoNote:'المواقيت محسوبة تلقائيًا لأغراض العرض. النسخة الحكومية تعتمد بيانات وزارة الأوقاف الرسمية.',todayTimes2:'مواقيت اليوم',lastThird:'الثلث الأخير من الليل',midnight:'منتصف الليل',thirdStart:'يبدأ الثلث الأخير',thirdEnd:'ينتهي (الفجر)',nightAlert:'تنبيه الثلث الأخير',qiblaDir:'اتجاه القبلة',north:'شمال',back:'رجوع',reportTitle:'الإبلاغ عن خطأ',reportWhat:'ما المشكلة؟',r1:'موقع المسجد غير صحيح',r2:'معلومات المسجد غير محدثة',r3:'مرفق غير متوفر فعليًا',r4:'مشكلة أخرى',reportDetails:'تفاصيل إضافية (اختياري)',reportPh:'اكتب وصفًا مختصرًا للمشكلة',sendReport:'إرسال البلاغ',language:'اللغة',prayerNotif:'إشعارات الصلاة',darkMode:'الوضع الليلي',reportGeneral:'⚠️ الإبلاغ عن مشكلة عامة',aboutTitle:'عن «وحي»',aboutBody:'نموذج أولي مستقل، غير رسمي، لاستكشاف فكرة منصة موحدة لخدمات المساجد. غير تابع لوزارة الأوقاف والشؤون الإسلامية.',noFav:'لا توجد مساجد في المفضلة بعد',noFavSub:'اضغط ♥ على أي مسجد لإضافته هنا',km:'كم',m:'م',remaining:'متبقي',h:'س',min:'د',openPage:'فتح صفحة المسجد',generalReport:'بلاغ عام (بدون مسجد محدد)',regarding:'بخصوص',reportReceived:'تم استلام البلاغ — رقم البلاغ #',noResults:'لا توجد نتائج',fajr:'الفجر',sunrise:'الشروق',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء',cap_small:'سعة صغيرة',cap_medium:'سعة متوسطة',cap_large:'سعة كبيرة'},
-  en:{splashTag:'Your guide to the mosque & prayer',notifTitle:'Notifications',demoNote:'This is a demo prototype. Mosque data and prayer times are for demonstration only and will later be sourced officially.',greeting:'Peace be upon you',nextPrayerLabel:'Next Prayer',nearestMosque:'🕌 Nearest mosque to you',locating:'Locating…',navHome:'Home',navMosques:'Mosques',navPrayer:'Prayer',favorites:'Favorites',more:'More',qibla:'Qibla',mosquesTitle:'Mosques',searchPh:'Search by mosque name or area',listView:'List',mapView:'Map',mapNote:'Demo map of Qatar — individual mosque pins coming in the next version.',backToMosques:'Back to Mosques',directions:'Directions',todayTimes:'Today\'s Prayer Times',fridaySermon:'Upcoming Friday Sermon',sample:'Sample',facilities:'Facilities',lastUpdated:'Last updated',reportWrongInfo:'Report incorrect information',prayerDemoNote:'Times are auto-calculated for demo purposes. The government version will use official Ministry of Awqaf data.',todayTimes2:'Today\'s Times',lastThird:'Last Third of the Night',midnight:'Midnight',thirdStart:'Last third begins',thirdEnd:'Ends (Fajr)',nightAlert:'Last-third alert',qiblaDir:'Qibla Direction',north:'North',back:'Back',reportTitle:'Report an Issue',reportWhat:'What\'s the problem?',r1:'Mosque location is incorrect',r2:'Mosque info is outdated',r3:'A listed facility is unavailable',r4:'Other issue',reportDetails:'Additional details (optional)',reportPh:'Briefly describe the issue',sendReport:'Submit Report',language:'Language',prayerNotif:'Prayer notifications',darkMode:'Dark mode',reportGeneral:'⚠️ Report a general issue',aboutTitle:'About "Wahy"',aboutBody:'An independent, unofficial prototype exploring a unified mosque-services platform idea. Not affiliated with the Ministry of Awqaf and Islamic Affairs.',noFav:'No favorite mosques yet',noFavSub:'Tap ♥ on any mosque to add it here',km:'km',m:'m',remaining:'Remaining',h:'h',min:'min',openPage:'Open mosque page',generalReport:'General report (no mosque specified)',regarding:'Regarding',reportReceived:'Report received — ticket #',noResults:'No results',fajr:'Fajr',sunrise:'Sunrise',dhuhr:'Dhuhr',asr:'Asr',maghrib:'Maghrib',isha:'Isha',cap_small:'Small capacity',cap_medium:'Medium capacity',cap_large:'Large capacity'}
+  ar:{splashTag:'دليلك إلى المسجد والصلاة',notifTitle:'الإشعارات',demoNote:'هذا نموذج أولي تجريبي. بيانات المساجد ومواقيت الصلاة هنا لأغراض العرض فقط، وستُعتمد لاحقًا من مصدر رسمي.',greeting:'السلام عليكم',nextPrayerLabel:'الصلاة القادمة',nearestMosque:'🕌 أقرب مسجد إليك',locating:'جارٍ تحديد الموقع…',navHome:'الرئيسية',navMosques:'المساجد',navPrayer:'الصلاة',favorites:'المفضلة',more:'المزيد',qibla:'القبلة',mosquesTitle:'المساجد',searchPh:'ابحث باسم المسجد أو المنطقة',listView:'القائمة',mapView:'الخريطة',mapNote:'خريطة تجريبية لقطر — تحديد مواقع المساجد الفردية سيُضاف في النسخة القادمة.',backToMosques:'رجوع للمساجد',directions:'الاتجاهات',todayTimes:'مواقيت الصلاة اليوم',fridaySermon:'خطبة الجمعة القادمة',sample:'تجريبي',facilities:'المرافق',lastUpdated:'آخر تحديث للمعلومات',reportWrongInfo:'الإبلاغ عن معلومة غير صحيحة',prayerDemoNote:'المواقيت محسوبة تلقائيًا لأغراض العرض. النسخة الحكومية تعتمد بيانات وزارة الأوقاف الرسمية.',todayTimes2:'مواقيت اليوم',lastThird:'الثلث الأخير من الليل',midnight:'منتصف الليل',thirdStart:'يبدأ الثلث الأخير',thirdEnd:'ينتهي (الفجر)',nightAlert:'تنبيه الثلث الأخير',qiblaDir:'اتجاه القبلة',north:'شمال',back:'رجوع',reportTitle:'الإبلاغ عن خطأ',reportWhat:'ما المشكلة؟',r1:'موقع المسجد غير صحيح',r2:'معلومات المسجد غير محدثة',r3:'مرفق غير متوفر فعليًا',r4:'مشكلة أخرى',reportDetails:'تفاصيل إضافية (اختياري)',reportPh:'اكتب وصفًا مختصرًا للمشكلة',sendReport:'إرسال البلاغ',language:'اللغة',prayerNotif:'إشعارات الصلاة',darkMode:'الوضع الليلي',reportGeneral:'⚠️ الإبلاغ عن مشكلة عامة',aboutTitle:'عن «وحي»',aboutBody:'نموذج أولي مستقل، غير رسمي، لاستكشاف فكرة منصة موحدة لخدمات المساجد. غير تابع لوزارة الأوقاف والشؤون الإسلامية.',noFav:'لا توجد مساجد في المفضلة بعد',noFavSub:'اضغط ♥ على أي مسجد لإضافته هنا',km:'كم',m:'م',remaining:'متبقي',h:'س',min:'د',openPage:'فتح صفحة المسجد',generalReport:'بلاغ عام (بدون مسجد محدد)',regarding:'بخصوص',reportReceived:'تم استلام البلاغ — رقم البلاغ #',noResults:'لا توجد نتائج',fajr:'الفجر',sunrise:'الشروق',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء',cap_small:'سعة صغيرة',cap_medium:'سعة متوسطة',cap_large:'سعة كبيرة',mapNote2:'اضغط أي علامة لعرض معلومات المسجد.',retry:'إعادة المحاولة',locDenied:'📍 لم يُسمح بالوصول للموقع — تُعرض المسافات من مركز الدوحة كموقع افتراضي.',prayerFailedCached:'تعذر الاتصال بمصدر المواقيت — تُعرض آخر بيانات محفوظة.',prayerFailedNoCache:'تعذر تحميل مواقيت الصلاة. تحقق من اتصال الإنترنت.'},
+  en:{splashTag:'Your guide to the mosque & prayer',notifTitle:'Notifications',demoNote:'This is a demo prototype. Mosque data and prayer times are for demonstration only and will later be sourced officially.',greeting:'Peace be upon you',nextPrayerLabel:'Next Prayer',nearestMosque:'🕌 Nearest mosque to you',locating:'Locating…',navHome:'Home',navMosques:'Mosques',navPrayer:'Prayer',favorites:'Favorites',more:'More',qibla:'Qibla',mosquesTitle:'Mosques',searchPh:'Search by mosque name or area',listView:'List',mapView:'Map',mapNote:'Demo map of Qatar — individual mosque pins coming in the next version.',backToMosques:'Back to Mosques',directions:'Directions',todayTimes:'Today\'s Prayer Times',fridaySermon:'Upcoming Friday Sermon',sample:'Sample',facilities:'Facilities',lastUpdated:'Last updated',reportWrongInfo:'Report incorrect information',prayerDemoNote:'Times are auto-calculated for demo purposes. The government version will use official Ministry of Awqaf data.',todayTimes2:'Today\'s Times',lastThird:'Last Third of the Night',midnight:'Midnight',thirdStart:'Last third begins',thirdEnd:'Ends (Fajr)',nightAlert:'Last-third alert',qiblaDir:'Qibla Direction',north:'North',back:'Back',reportTitle:'Report an Issue',reportWhat:'What\'s the problem?',r1:'Mosque location is incorrect',r2:'Mosque info is outdated',r3:'A listed facility is unavailable',r4:'Other issue',reportDetails:'Additional details (optional)',reportPh:'Briefly describe the issue',sendReport:'Submit Report',language:'Language',prayerNotif:'Prayer notifications',darkMode:'Dark mode',reportGeneral:'⚠️ Report a general issue',aboutTitle:'About "Wahy"',aboutBody:'An independent, unofficial prototype exploring a unified mosque-services platform idea. Not affiliated with the Ministry of Awqaf and Islamic Affairs.',noFav:'No favorite mosques yet',noFavSub:'Tap ♥ on any mosque to add it here',km:'km',m:'m',remaining:'Remaining',h:'h',min:'min',openPage:'Open mosque page',generalReport:'General report (no mosque specified)',regarding:'Regarding',reportReceived:'Report received — ticket #',noResults:'No results',fajr:'Fajr',sunrise:'Sunrise',dhuhr:'Dhuhr',asr:'Asr',maghrib:'Maghrib',isha:'Isha',cap_small:'Small capacity',cap_medium:'Medium capacity',cap_large:'Large capacity',mapNote2:'Tap any marker to view mosque info.',retry:'Retry',locDenied:'📍 Location access was not granted — distances are shown from central Doha as a default.',prayerFailedCached:'Could not reach the timings source — showing last saved data.',prayerFailedNoCache:'Could not load prayer times. Check your internet connection.'}
 };
 let currentLang='ar';
 function t(k){ return STR[currentLang][k] || k; }
@@ -441,11 +481,38 @@ function mosqueCardHTML(m){
     <div class="fac-list">${m.fac.slice(0,3).map(f=>`<span class="fac-chip">${FAC_LABELS[f][currentLang]}</span>`).join('')}</div>
   </div>`;
 }
+let leafletMap=null, mosqueMarkers=[], userMarker=null;
 function setMosqueView(v){
   document.getElementById('tab-list').classList.toggle('active', v==='list');
   document.getElementById('tab-map').classList.toggle('active', v==='map');
   document.getElementById('mosque-list-view').hidden = v!=='list';
   document.getElementById('mosque-map-view').hidden = v!=='map';
+  if(v==='map') initRealMap();
+}
+function initRealMap(){
+  if(leafletMap){ setTimeout(()=>leafletMap.invalidateSize(),50); return; }
+  leafletMap=L.map('real-map',{zoomControl:true}).setView([userLoc.lat,userLoc.lon],11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:18, attribution:'&copy; OpenStreetMap contributors'
+  }).addTo(leafletMap);
+  renderMapMarkers();
+  setTimeout(()=>leafletMap.invalidateSize(),80);
+}
+function renderMapMarkers(){
+  if(!leafletMap) return;
+  mosqueMarkers.forEach(m=>leafletMap.removeLayer(m));
+  mosqueMarkers=[];
+  MOSQUES.forEach(m=>{
+    const marker=L.marker([m.lat,m.lon]).addTo(leafletMap);
+    const popupEl=document.createElement('div');
+    popupEl.className='map-popup';
+    popupEl.innerHTML=`<div class="mname">${m.name[currentLang]}</div><div class="muted">${m.area[currentLang]} · ${distanceLabel(m)}</div><button>${t('openPage')}</button>`;
+    popupEl.querySelector('button').onclick=()=>{ leafletMap.closePopup(); openMosque(m.id); };
+    marker.bindPopup(popupEl);
+    mosqueMarkers.push(marker);
+  });
+  if(userMarker){ leafletMap.removeLayer(userMarker); }
+  userMarker=L.circleMarker([userLoc.lat,userLoc.lon],{radius:7,color:'#0E3B36',fillColor:'#1C6158',fillOpacity:1}).addTo(leafletMap);
 }
 function renderMosqueList(){
   const q=(document.getElementById('mosque-search').value||'').trim();
@@ -510,7 +577,8 @@ function applyLanguage(lang){
   document.getElementById('back-arrow2').textContent = lang==='ar'?'→':'←';
   renderNotifs();
   renderNearest();
-  if(!document.getElementById('screen-mosques').hidden) renderMosqueList();
+  if(locationDenied) showLocationNote();
+  if(!document.getElementById('screen-mosques').hidden){ renderMosqueList(); renderMapMarkers(); }
   if(!document.getElementById('screen-favorites').hidden) renderFavorites();
   if(currentMosque && !document.getElementById('screen-detail').hidden) openMosque(currentMosque.id);
   if(todayTimings){ renderTimesTable('p-times', todayTimings); updateNextPrayer(); }
@@ -553,21 +621,42 @@ function computeNight(){
   document.getElementById('p-third-end').textContent=fajrTomorrow.toLocaleTimeString(loc,opt);
 }
 function dateStr(offset){ const d=new Date(); d.setDate(d.getDate()+(offset||0)); const dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0'),yyyy=d.getFullYear(); return `${dd}-${mm}-${yyyy}`; }
+function hidePrayerError(){ document.getElementById('prayer-error-banner').hidden=true; }
+function showPrayerError(key){
+  document.getElementById('prayer-error-text').textContent=t(key);
+  document.getElementById('prayer-error-banner').hidden=false;
+}
 async function loadPrayerTimes(){
+  hidePrayerError();
   try{
     const base='https://api.aladhan.com/v1/timings/';
     const [r1,r2]=await Promise.all([
       fetch(`${base}${dateStr(0)}?latitude=${userLoc.lat}&longitude=${userLoc.lon}&method=4`),
       fetch(`${base}${dateStr(1)}?latitude=${userLoc.lat}&longitude=${userLoc.lon}&method=4`)
     ]);
+    if(!r1.ok || !r2.ok) throw new Error('bad-response');
     const j1=await r1.json(), j2=await r2.json();
     todayTimings=j1.data.timings; tomorrowTimings=j2.data.timings;
+    localStorage.setItem('wahy-timings-cache', JSON.stringify({date:dateStr(0), today:todayTimings, tomorrow:tomorrowTimings}));
     renderTimesTable('p-times', todayTimings);
     if(currentMosque) renderTimesTable('d-times', todayTimings);
     updateNextPrayer(); computeNight();
     setInterval(updateNextPrayer,60000);
   }catch(e){
+    const cachedRaw=localStorage.getItem('wahy-timings-cache');
+    if(cachedRaw){
+      try{
+        const cached=JSON.parse(cachedRaw);
+        todayTimings=cached.today; tomorrowTimings=cached.tomorrow;
+        renderTimesTable('p-times', todayTimings);
+        if(currentMosque) renderTimesTable('d-times', todayTimings);
+        updateNextPrayer(); computeNight();
+        showPrayerError('prayerFailedCached');
+        return;
+      }catch(e2){/* fall through */}
+    }
     document.getElementById('p-times').innerHTML=`<tr><td colspan="2" class="muted">—</td></tr>`;
+    showPrayerError('prayerFailedNoCache');
   }
 }
 
@@ -593,14 +682,22 @@ function renderNearest(){
 }
 
 // ================= Init =================
+let locationDenied=false;
 function initLocationAndLoad(){
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(
       pos=>{ userLoc={lat:pos.coords.latitude, lon:pos.coords.longitude}; afterLocation(); },
-      ()=>{ afterLocation(); }, {timeout:4000});
-  } else afterLocation();
+      ()=>{ locationDenied=true; showLocationNote(); afterLocation(); }, {timeout:4000});
+  } else { locationDenied=true; showLocationNote(); afterLocation(); }
 }
-function afterLocation(){ renderNearest(); computeQibla(); loadPrayerTimes(); }
+function showLocationNote(){
+  const el=document.getElementById('location-note');
+  el.textContent=t('locDenied'); el.hidden=false;
+}
+function afterLocation(){
+  renderNearest(); computeQibla(); loadPrayerTimes();
+  if(leafletMap){ leafletMap.setView([userLoc.lat,userLoc.lon],11); renderMapMarkers(); }
+}
 
 (function init(){
   const savedTheme = localStorage.getItem('wahy-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light');
@@ -611,6 +708,11 @@ function afterLocation(){ renderNearest(); computeQibla(); loadPrayerTimes(); }
   initLocationAndLoad();
   setTimeout(()=>document.getElementById('splash').classList.add('hide'), 1600);
   document.getElementById('splash').addEventListener('click', ()=>document.getElementById('splash').classList.add('hide'));
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', ()=>{
+      navigator.serviceWorker.register('./sw.js').catch(()=>{ /* offline support unavailable, app still works online */ });
+    });
+  }
 })();
 </script>
 </body>
