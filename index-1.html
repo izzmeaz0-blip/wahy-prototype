@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>وحي — دليل المساجد</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0E3B36">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="phone" id="phone">
+
+  <div id="splash">
+    <svg class="brand-mark-lg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" rx="22" fill="#F1EFE6"/>
+      <rect x="45" y="8" width="10" height="12" rx="2" fill="#0E3B36"/>
+      <path d="M50 17 C 36 17 27 28 27 42 L27 74 L73 74 L73 42 C73 28 64 17 50 17 Z" fill="#0E3B36"/>
+      <rect x="27" y="74" width="46" height="7" rx="2" fill="#0E3B36"/>
+      <circle cx="70" cy="32" r="9" fill="#D8B565"/>
+      <circle cx="74" cy="29" r="8" fill="#F1EFE6"/>
+    </svg>
+    <div class="brand" style="margin-top:12px;">وحي</div>
+    <div class="tag" data-i18n="splashTag">دليلك إلى المسجد والصلاة</div>
+  </div>
+
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:9px;">
+      <svg class="brand-mark-sm" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="#F1EFE6"/>
+        <rect x="45" y="8" width="10" height="12" rx="2" fill="#0E3B36"/>
+        <path d="M50 17 C 36 17 27 28 27 42 L27 74 L73 74 L73 42 C73 28 64 17 50 17 Z" fill="#0E3B36"/>
+        <rect x="27" y="74" width="46" height="7" rx="2" fill="#0E3B36"/>
+        <circle cx="70" cy="32" r="9" fill="#D8B565"/>
+        <circle cx="74" cy="29" r="8" fill="#F1EFE6"/>
+      </svg>
+      <div class="brand">وحي</div>
+    </div>
+    <div class="icons">
+      <div class="bell" onclick="toggleNotif()" role="button" tabindex="0" aria-label="الإشعارات" onkeydown="if(event.key==='Enter')toggleNotif()">🔔<span class="dot" id="notif-dot"></span></div>
+    </div>
+  </header>
+
+  <div id="notif-panel" onclick="if(event.target===this)toggleNotif()">
+    <div class="sheet">
+      <h2 data-i18n="notifTitle">الإشعارات</h2>
+      <div id="notif-list"></div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <main class="screen" id="screen-home">
+    <div class="demo-note" data-i18n="demoNote">هذا نموذج أولي تجريبي. بيانات المساجد ومواقيت الصلاة هنا لأغراض العرض فقط، وستُعتمد لاحقًا من مصدر رسمي.</div>
+    <div class="muted" style="margin-bottom:10px;" data-i18n="greeting">السلام عليكم</div>
+    <div class="location-note" id="location-note" hidden></div>
+    <div class="next-prayer">
+      <div class="label" data-i18n="nextPrayerLabel">الصلاة القادمة</div>
+      <div class="name" id="home-next-name">—</div>
+      <div class="time" id="home-next-time">—</div>
+      <div class="countdown" id="home-countdown">—</div>
+    </div>
+    <div class="card pressable" id="home-nearest-card">
+      <h2><span data-i18n="nearestMosque">🕌 أقرب مسجد إليك</span></h2>
+      <div id="home-nearest-body" class="muted" data-i18n="locating">جارٍ تحديد الموقع…</div>
+    </div>
+    <div class="quick-grid">
+      <div class="quick-item" onclick="go('mosques')"><span class="ic">🕌</span><span data-i18n="navMosques">المساجد</span></div>
+      <div class="quick-item" onclick="go('prayer')"><span class="ic">🕐</span><span data-i18n="navPrayer">الصلاة</span></div>
+      <div class="quick-item" onclick="go('prayer');scrollToQibla()"><span class="ic">🧭</span><span data-i18n="qibla">القبلة</span></div>
+      <div class="quick-item" onclick="go('favorites')"><span class="ic">❤️</span><span data-i18n="favorites">المفضلة</span></div>
+    </div>
+  </main>
+
+  <!-- MOSQUES -->
+  <main class="screen" id="screen-mosques" hidden>
+    <h1 style="margin-bottom:12px;" data-i18n="mosquesTitle">المساجد</h1>
+    <div class="search-box">
+      <span>🔍</span>
+      <input id="mosque-search" data-i18n-ph="searchPh" placeholder="ابحث باسم المسجد أو المنطقة" oninput="renderMosqueList()">
+    </div>
+    <div class="toggle-row">
+      <button id="tab-list" class="active" onclick="setMosqueView('list')" data-i18n="listView">القائمة</button>
+      <button id="tab-map" onclick="setMosqueView('map')" data-i18n="mapView">الخريطة</button>
+    </div>
+    <div id="mosque-map-view" hidden>
+      <div id="real-map"></div>
+      <div class="muted" style="font-size:11px;margin-bottom:10px;" data-i18n="mapNote2">اضغط أي علامة لعرض معلومات المسجد.</div>
+    </div>
+    <div id="mosque-list-view"></div>
+  </main>
+
+  <!-- DETAIL -->
+  <main class="screen" id="screen-detail" hidden>
+    <div class="back-row" onclick="go('mosques')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')go('mosques')"><span id="back-arrow">→</span> <span data-i18n="backToMosques">رجوع للمساجد</span></div>
+    <div class="detail-hero">
+      <button class="heart-btn" id="detail-heart" onclick="toggleFavorite(currentMosque.id, this)" aria-label="إضافة للمفضلة" aria-pressed="false">♥</button>
+      <div class="mname" id="d-name">—</div>
+      <div class="mmeta" id="d-meta">—</div>
+      <button class="btn small" style="width:100%;background:#fff;color:var(--primary);" onclick="openDirections()">🧭 <span data-i18n="directions">الاتجاهات</span></button>
+    </div>
+    <div class="card">
+      <h2 data-i18n="todayTimes">مواقيت الصلاة اليوم</h2>
+      <table class="times-table" id="d-times"></table>
+    </div>
+    <div class="card">
+      <h2>🕌 <span data-i18n="fridaySermon">خطبة الجمعة القادمة</span></h2>
+      <div class="pill" data-i18n="sample">تجريبي</div>
+      <div style="font-size:14px;font-weight:500;margin:6px 0;" id="d-sermon-title">—</div>
+      <div class="muted" id="d-sermon-time">—</div>
+    </div>
+    <div class="card">
+      <h2>📖 <span data-i18n="upcomingLessons">الدروس والمحاضرات القادمة</span></h2>
+      <div id="d-lessons"></div>
+    </div>
+    <div class="card">
+      <h2>🎙️ <span data-i18n="sermonArchive">أرشيف خطب الجمعة السابقة</span></h2>
+      <div id="d-sermon-archive"></div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="facilities">المرافق</h2>
+      <div class="fac-list" id="d-facilities"></div>
+      <div class="muted" style="margin-top:10px;font-size:12px;" id="d-capacity"></div>
+    </div>
+    <div class="card">
+      <div class="muted" style="margin-bottom:4px;"><span data-i18n="lastUpdated">آخر تحديث للمعلومات</span>: <span id="d-updated"></span></div>
+      <div class="report-link" onclick="openReport(currentMosque)">⚠️ <span data-i18n="reportWrongInfo">الإبلاغ عن معلومة غير صحيحة</span></div>
+    </div>
+  </main>
+
+  <!-- PRAYER -->
+  <main class="screen" id="screen-prayer" hidden>
+    <h1 style="margin-bottom:12px;" data-i18n="navPrayer">الصلاة</h1>
+    <div class="demo-note" data-i18n="prayerDemoNote">المواقيت محسوبة تلقائيًا لأغراض العرض. النسخة الحكومية تعتمد بيانات وزارة الأوقاف الرسمية.</div>
+    <div class="error-banner" id="prayer-error-banner" hidden>
+      <span id="prayer-error-text"></span>
+      <button onclick="loadPrayerTimes()" data-i18n="retry">إعادة المحاولة</button>
+    </div>
+    <div class="next-prayer">
+      <div class="label" data-i18n="nextPrayerLabel">الصلاة القادمة</div>
+      <div class="name" id="p-next-name">—</div>
+      <div class="time" id="p-next-time">—</div>
+      <div class="countdown" id="p-countdown">—</div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="todayTimes2">مواقيت اليوم</h2>
+      <table class="times-table" id="p-times"></table>
+      <div class="night-box" id="night-box">
+        <h2 style="margin-bottom:8px;">🌙 <span data-i18n="lastThird">الثلث الأخير من الليل</span></h2>
+        <div class="row"><span data-i18n="midnight">منتصف الليل</span><b id="p-midnight">—</b></div>
+        <div class="row"><span data-i18n="thirdStart">يبدأ الثلث الأخير</span><b id="p-third-start">—</b></div>
+        <div class="row"><span data-i18n="thirdEnd">ينتهي (الفجر)</span><b id="p-third-end">—</b></div>
+        <div class="settings-row" style="border:none;padding-top:8px;">
+          <span data-i18n="nightAlert">تنبيه الثلث الأخير</span>
+          <div class="switch" id="night-switch" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="qibla-card">
+      <h2>🧭 <span data-i18n="qiblaDir">اتجاه القبلة</span></h2>
+      <div class="compass-wrap">
+        <div class="compass">
+          <div class="n-label" data-i18n="north">شمال</div>
+          <div class="needle" id="qibla-needle"></div>
+        </div>
+        <div class="muted" id="qibla-deg">—</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FAVORITES -->
+  <main class="screen" id="screen-favorites" hidden>
+    <h1 style="margin-bottom:12px;" data-i18n="favorites">المفضلة</h1>
+    <div id="fav-list"></div>
+  </main>
+
+  <!-- CONTENT (lessons & lectures) -->
+  <main class="screen" id="screen-content" hidden>
+    <h1 style="margin-bottom:4px;" data-i18n="navContent">المحتوى</h1>
+    <div class="muted" style="margin-bottom:14px;" data-i18n="contentSub">دروس ومحاضرات قادمة من مساجد مختلفة (بيانات تجريبية)</div>
+    <div id="content-list"></div>
+  </main>
+
+  <!-- QURAN: surah list -->
+  <main class="screen" id="screen-quran-list" hidden>
+    <div class="back-row" onclick="go('more')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')go('more')"><span class="qr-back">→</span> <span data-i18n="back">رجوع</span></div>
+    <h1 style="margin-bottom:4px;" data-i18n="quranMenuItem">📖 المصحف</h1>
+    <div class="muted" style="margin-bottom:14px;" data-i18n="quranSourceNote">النص من مصحف عثماني موثوق عبر alquran.cloud — نص حقيقي وليس بيانات تجريبية.</div>
+    <div class="error-banner" id="quran-list-error" hidden>
+      <span id="quran-list-error-text"></span>
+      <button onclick="loadSurahList()" data-i18n="retry">إعادة المحاولة</button>
+    </div>
+    <div id="quran-surah-list"></div>
+  </main>
+
+  <!-- QURAN: reader -->
+  <main class="screen" id="screen-quran-read" hidden>
+    <div class="back-row" onclick="go('quran-list')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')go('quran-list')"><span class="qr-back">→</span> <span data-i18n="backToSurahs">رجوع لقائمة السور</span></div>
+    <h1 id="qr-surah-title" style="margin-bottom:4px;">—</h1>
+    <div class="muted" id="qr-surah-meta" style="margin-bottom:12px;"></div>
+    <div class="error-banner" id="quran-read-error" hidden>
+      <span id="quran-read-error-text"></span>
+      <button id="quran-read-retry" data-i18n="retry">إعادة المحاولة</button>
+    </div>
+    <div id="qr-ayat" class="quran-text"></div>
+  </main>
+
+  <!-- REPORT -->
+  <main class="screen" id="screen-report" hidden>
+    <div class="back-row" onclick="goBack()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')goBack()"><span id="back-arrow2">→</span> <span data-i18n="back">رجوع</span></div>
+    <h1 style="margin-bottom:4px;" data-i18n="reportTitle">الإبلاغ عن خطأ</h1>
+    <div class="muted" style="margin-bottom:14px;" id="report-mosque-label">—</div>
+    <div class="form-group">
+      <label data-i18n="reportWhat">ما المشكلة؟</label>
+      <label class="radio-opt"><input type="radio" name="rtype" checked> <span data-i18n="r1">موقع المسجد غير صحيح</span></label>
+      <label class="radio-opt"><input type="radio" name="rtype"> <span data-i18n="r2">معلومات المسجد غير محدثة</span></label>
+      <label class="radio-opt"><input type="radio" name="rtype"> <span data-i18n="r3">مرفق غير متوفر فعليًا</span></label>
+      <label class="radio-opt"><input type="radio" name="rtype"> <span data-i18n="r4">مشكلة أخرى</span></label>
+    </div>
+    <div class="form-group">
+      <label data-i18n="reportDetails">تفاصيل إضافية (اختياري)</label>
+      <textarea rows="4" data-i18n-ph="reportPh" placeholder="اكتب وصفًا مختصرًا للمشكلة"></textarea>
+    </div>
+    <button class="btn" onclick="submitReport()" data-i18n="sendReport">إرسال البلاغ</button>
+  </main>
+
+  <!-- MORE -->
+  <main class="screen" id="screen-more" hidden>
+    <h1 style="margin-bottom:14px;" data-i18n="more">المزيد</h1>
+    <div class="card">
+      <div class="settings-row">
+        <span data-i18n="language">اللغة</span>
+        <div class="lang-toggle">
+          <button id="lang-ar" class="active" onclick="applyLanguage('ar')">AR</button>
+          <button id="lang-en" onclick="applyLanguage('en')">EN</button>
+        </div>
+      </div>
+      <div class="settings-row"><span data-i18n="prayerNotif">إشعارات الصلاة</span>
+        <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+      </div>
+      <div class="settings-row"><span data-i18n="darkMode">الوضع الليلي</span>
+        <div class="switch" id="dark-switch" onclick="toggleDark(this)"><div class="knob"></div></div>
+      </div>
+      <div class="settings-row" onclick="go('favorites')" style="cursor:pointer;">
+        <span data-i18n="favoritesMenuItem">❤️ مساجدي المفضلة</span><span>›</span>
+      </div>
+      <div class="settings-row" onclick="openQuranList()" style="cursor:pointer;">
+        <span data-i18n="quranMenuItem">📖 المصحف</span><span>›</span>
+      </div>
+      <div class="settings-row" onclick="openReport(null)" style="cursor:pointer;">
+        <span data-i18n="reportGeneral">⚠️ الإبلاغ عن مشكلة عامة</span><span>›</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="officialLinksTitle">روابط رسمية</h2>
+      <div class="settings-row" style="border-bottom:none;">
+        <a href="https://www.islam.gov.qa" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:none;" data-i18n="ministrySiteLink">🔗 الموقع الرسمي لوزارة الأوقاف والشؤون الإسلامية</a>
+      </div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="aboutTitle">عن «وحي»</h2>
+      <div class="muted" data-i18n="aboutBody">نموذج أولي مستقل، غير رسمي، لاستكشاف فكرة منصة موحدة لخدمات المساجد. غير تابع لوزارة الأوقاف والشؤون الإسلامية.</div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <nav class="bottom-nav" role="navigation" aria-label="التنقل الرئيسي">
+    <button data-s="home" class="active" onclick="go('home')" aria-label="الرئيسية"><span class="ic" aria-hidden="true">🏠</span><span data-i18n="navHome">الرئيسية</span></button>
+    <button data-s="mosques" onclick="go('mosques')" aria-label="المساجد"><span class="ic" aria-hidden="true">🕌</span><span data-i18n="navMosques">المساجد</span></button>
+    <button data-s="prayer" onclick="go('prayer')" aria-label="الصلاة"><span class="ic" aria-hidden="true">🕐</span><span data-i18n="navPrayer">الصلاة</span></button>
+    <button data-s="content" onclick="go('content')" aria-label="المحتوى"><span class="ic" aria-hidden="true">📖</span><span data-i18n="navContent">المحتوى</span></button>
+    <button data-s="more" onclick="go('more')" aria-label="المزيد"><span class="ic" aria-hidden="true">⋯</span><span data-i18n="more">المزيد</span></button>
+  </nav>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
