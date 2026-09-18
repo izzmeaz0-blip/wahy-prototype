@@ -1,7 +1,7 @@
 // ================= i18n =================
 const STR = {
-  ar:{splashTag:'دليلك إلى المسجد والصلاة',notifTitle:'الإشعارات',demoNote:'هذا نموذج أولي تجريبي. بيانات المساجد ومواقيت الصلاة هنا لأغراض العرض فقط، وستُعتمد لاحقًا من مصدر رسمي.',greeting:'السلام عليكم',nextPrayerLabel:'الصلاة القادمة',nearestMosque:'🕌 أقرب مسجد إليك',locating:'جارٍ تحديد الموقع…',navHome:'الرئيسية',navMosques:'المساجد',navPrayer:'الصلاة',favorites:'المفضلة',more:'المزيد',qibla:'القبلة',mosquesTitle:'المساجد',searchPh:'ابحث باسم المسجد أو المنطقة',listView:'القائمة',mapView:'الخريطة',mapNote:'خريطة تجريبية لقطر — تحديد مواقع المساجد الفردية سيُضاف في النسخة القادمة.',backToMosques:'رجوع للمساجد',directions:'الاتجاهات',todayTimes:'مواقيت الصلاة اليوم',fridaySermon:'خطبة الجمعة القادمة',sample:'تجريبي',facilities:'المرافق',lastUpdated:'آخر تحديث للمعلومات',reportWrongInfo:'الإبلاغ عن معلومة غير صحيحة',prayerDemoNote:'المواقيت محسوبة تلقائيًا لأغراض العرض. النسخة الحكومية تعتمد بيانات وزارة الأوقاف الرسمية.',todayTimes2:'مواقيت اليوم',lastThird:'الثلث الأخير من الليل',midnight:'منتصف الليل',thirdStart:'يبدأ الثلث الأخير',thirdEnd:'ينتهي (الفجر)',nightAlert:'تنبيه الثلث الأخير',qiblaDir:'اتجاه القبلة',north:'شمال',back:'رجوع',reportTitle:'الإبلاغ عن خطأ',reportWhat:'ما المشكلة؟',r1:'موقع المسجد غير صحيح',r2:'معلومات المسجد غير محدثة',r3:'مرفق غير متوفر فعليًا',r4:'مشكلة أخرى',reportDetails:'تفاصيل إضافية (اختياري)',reportPh:'اكتب وصفًا مختصرًا للمشكلة',sendReport:'إرسال البلاغ',language:'اللغة',prayerNotif:'إشعارات الصلاة',darkMode:'الوضع الليلي',reportGeneral:'⚠️ الإبلاغ عن مشكلة عامة',aboutTitle:'عن «وحي»',aboutBody:'نموذج أولي مستقل، غير رسمي، لاستكشاف فكرة منصة موحدة لخدمات المساجد. غير تابع لوزارة الأوقاف والشؤون الإسلامية.',noFav:'لا توجد مساجد في المفضلة بعد',noFavSub:'اضغط ♥ على أي مسجد لإضافته هنا',km:'كم',m:'م',remaining:'متبقي',h:'س',min:'د',openPage:'فتح صفحة المسجد',generalReport:'بلاغ عام (بدون مسجد محدد)',regarding:'بخصوص',reportReceived:'تم استلام البلاغ — رقم البلاغ #',noResults:'لا توجد نتائج',fajr:'الفجر',sunrise:'الشروق',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء',cap_small:'سعة صغيرة',cap_medium:'سعة متوسطة',cap_large:'سعة كبيرة',mapNote2:'اضغط أي علامة لعرض معلومات المسجد.',retry:'إعادة المحاولة',locDenied:'📍 لم يُسمح بالوصول للموقع — تُعرض المسافات من مركز الدوحة كموقع افتراضي.',prayerFailedCached:'تعذر الاتصال بمصدر المواقيت — تُعرض آخر بيانات محفوظة.',prayerFailedNoCache:'تعذر تحميل مواقيت الصلاة. تحقق من اتصال الإنترنت.',navContent:'المحتوى',contentSub:'دروس ومحاضرات قادمة من مساجد مختلفة (بيانات تجريبية)',upcomingLessons:'الدروس والمحاضرات القادمة',sermonArchive:'أرشيف خطب الجمعة السابقة',noLessons:'لا توجد دروس مجدولة حاليًا',noArchive:'لا يوجد أرشيف متاح بعد',favoritesMenuItem:'❤️ مساجدي المفضلة',officialLinksTitle:'روابط رسمية',ministrySiteLink:'🔗 الموقع الرسمي لوزارة الأوقاف والشؤون الإسلامية',quranMenuItem:'📖 المصحف',quranSourceNote:'النص من مصحف عثماني موثوق عبر alquran.cloud — نص حقيقي وليس بيانات تجريبية.',backToSurahs:'رجوع لقائمة السور',ayahsLabel:'آية',quranListFailed:'تعذر تحميل قائمة السور. تحقق من اتصال الإنترنت.',quranReadFailed:'تعذر تحميل نص السورة. تحقق من اتصال الإنترنت.'},
-  en:{splashTag:'Your guide to the mosque & prayer',notifTitle:'Notifications',demoNote:'This is a demo prototype. Mosque data and prayer times are for demonstration only and will later be sourced officially.',greeting:'Peace be upon you',nextPrayerLabel:'Next Prayer',nearestMosque:'🕌 Nearest mosque to you',locating:'Locating…',navHome:'Home',navMosques:'Mosques',navPrayer:'Prayer',favorites:'Favorites',more:'More',qibla:'Qibla',mosquesTitle:'Mosques',searchPh:'Search by mosque name or area',listView:'List',mapView:'Map',mapNote:'Demo map of Qatar — individual mosque pins coming in the next version.',backToMosques:'Back to Mosques',directions:'Directions',todayTimes:'Today\'s Prayer Times',fridaySermon:'Upcoming Friday Sermon',sample:'Sample',facilities:'Facilities',lastUpdated:'Last updated',reportWrongInfo:'Report incorrect information',prayerDemoNote:'Times are auto-calculated for demo purposes. The government version will use official Ministry of Awqaf data.',todayTimes2:'Today\'s Times',lastThird:'Last Third of the Night',midnight:'Midnight',thirdStart:'Last third begins',thirdEnd:'Ends (Fajr)',nightAlert:'Last-third alert',qiblaDir:'Qibla Direction',north:'North',back:'Back',reportTitle:'Report an Issue',reportWhat:'What\'s the problem?',r1:'Mosque location is incorrect',r2:'Mosque info is outdated',r3:'A listed facility is unavailable',r4:'Other issue',reportDetails:'Additional details (optional)',reportPh:'Briefly describe the issue',sendReport:'Submit Report',language:'Language',prayerNotif:'Prayer notifications',darkMode:'Dark mode',reportGeneral:'⚠️ Report a general issue',aboutTitle:'About "Wahy"',aboutBody:'An independent, unofficial prototype exploring a unified mosque-services platform idea. Not affiliated with the Ministry of Awqaf and Islamic Affairs.',noFav:'No favorite mosques yet',noFavSub:'Tap ♥ on any mosque to add it here',km:'km',m:'m',remaining:'Remaining',h:'h',min:'min',openPage:'Open mosque page',generalReport:'General report (no mosque specified)',regarding:'Regarding',reportReceived:'Report received — ticket #',noResults:'No results',fajr:'Fajr',sunrise:'Sunrise',dhuhr:'Dhuhr',asr:'Asr',maghrib:'Maghrib',isha:'Isha',cap_small:'Small capacity',cap_medium:'Medium capacity',cap_large:'Large capacity',mapNote2:'Tap any marker to view mosque info.',retry:'Retry',locDenied:'📍 Location access was not granted — distances are shown from central Doha as a default.',prayerFailedCached:'Could not reach the timings source — showing last saved data.',prayerFailedNoCache:'Could not load prayer times. Check your internet connection.',navContent:'Content',contentSub:'Upcoming lessons and lectures from various mosques (sample data)',upcomingLessons:'Upcoming Lessons & Lectures',sermonArchive:'Past Friday Sermons Archive',noLessons:'No lessons currently scheduled',noArchive:'No archive available yet',favoritesMenuItem:'❤️ My Favorite Mosques',officialLinksTitle:'Official Links',ministrySiteLink:'🔗 Official website of the Ministry of Awqaf and Islamic Affairs',quranMenuItem:'📖 Mus\'haf (Quran)',quranSourceNote:'Text from a verified Uthmani mushaf via alquran.cloud — real text, not sample data.',backToSurahs:'Back to Surah list',ayahsLabel:'verses',quranListFailed:'Could not load the surah list. Check your internet connection.',quranReadFailed:'Could not load the surah text. Check your internet connection.'}
+  ar:{splashTag:'دليلك إلى المسجد والصلاة',notifTitle:'الإشعارات',demoNote:'هذا نموذج أولي تجريبي. بيانات المساجد ومواقيت الصلاة هنا لأغراض العرض فقط، وستُعتمد لاحقًا من مصدر رسمي.',greeting:'السلام عليكم',nextPrayerLabel:'الصلاة القادمة',nearestMosque:'🕌 أقرب مسجد إليك',locating:'جارٍ تحديد الموقع…',navHome:'الرئيسية',navMosques:'المساجد',navPrayer:'الصلاة',favorites:'المفضلة',more:'المزيد',qibla:'القبلة',mosquesTitle:'المساجد',searchPh:'ابحث باسم المسجد أو المنطقة',listView:'القائمة',mapView:'الخريطة',mapNote:'خريطة تجريبية لقطر — تحديد مواقع المساجد الفردية سيُضاف في النسخة القادمة.',backToMosques:'رجوع للمساجد',directions:'الاتجاهات',todayTimes:'مواقيت الصلاة اليوم',fridaySermon:'خطبة الجمعة القادمة',sample:'تجريبي',facilities:'المرافق',lastUpdated:'آخر تحديث للمعلومات',reportWrongInfo:'الإبلاغ عن معلومة غير صحيحة',prayerDemoNote:'المواقيت محسوبة تلقائيًا لأغراض العرض. النسخة الحكومية تعتمد بيانات وزارة الأوقاف الرسمية.',todayTimes2:'مواقيت اليوم',lastThird:'الثلث الأخير من الليل',midnight:'منتصف الليل',thirdStart:'يبدأ الثلث الأخير',thirdEnd:'ينتهي (الفجر)',nightAlert:'تنبيه الثلث الأخير',qiblaDir:'اتجاه القبلة',north:'شمال',back:'رجوع',reportTitle:'الإبلاغ عن خطأ',reportWhat:'ما المشكلة؟',r1:'موقع المسجد غير صحيح',r2:'معلومات المسجد غير محدثة',r3:'مرفق غير متوفر فعليًا',r4:'مشكلة أخرى',reportDetails:'تفاصيل إضافية (اختياري)',reportPh:'اكتب وصفًا مختصرًا للمشكلة',sendReport:'إرسال البلاغ',language:'اللغة',prayerNotif:'إشعارات الصلاة',darkMode:'الوضع الليلي',reportGeneral:'⚠️ الإبلاغ عن مشكلة عامة',aboutTitle:'عن «وحي»',aboutBody:'نموذج أولي مستقل، غير رسمي، لاستكشاف فكرة منصة موحدة لخدمات المساجد. غير تابع لوزارة الأوقاف والشؤون الإسلامية.',noFav:'لا توجد مساجد في المفضلة بعد',noFavSub:'اضغط ♥ على أي مسجد لإضافته هنا',km:'كم',m:'م',remaining:'متبقي',h:'س',min:'د',openPage:'فتح صفحة المسجد',generalReport:'بلاغ عام (بدون مسجد محدد)',regarding:'بخصوص',reportReceived:'تم استلام البلاغ — رقم البلاغ #',noResults:'لا توجد نتائج',fajr:'الفجر',sunrise:'الشروق',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء',cap_small:'سعة صغيرة',cap_medium:'سعة متوسطة',cap_large:'سعة كبيرة',mapNote2:'اضغط أي علامة لعرض معلومات المسجد.',retry:'إعادة المحاولة',locDenied:'📍 لم يُسمح بالوصول للموقع — تُعرض المسافات من مركز الدوحة كموقع افتراضي.',prayerFailedCached:'تعذر الاتصال بمصدر المواقيت — تُعرض آخر بيانات محفوظة.',prayerFailedNoCache:'تعذر تحميل مواقيت الصلاة. تحقق من اتصال الإنترنت.',navContent:'المحتوى',contentSub:'دروس ومحاضرات قادمة من مساجد مختلفة (بيانات تجريبية)',upcomingLessons:'الدروس والمحاضرات القادمة',sermonArchive:'أرشيف خطب الجمعة السابقة',noLessons:'لا توجد دروس مجدولة حاليًا',noArchive:'لا يوجد أرشيف متاح بعد',favoritesMenuItem:'❤️ مساجدي المفضلة',officialLinksTitle:'روابط رسمية',ministrySiteLink:'🔗 الموقع الرسمي لوزارة الأوقاف والشؤون الإسلامية',quranMenuItem:'📖 المصحف',quranSourceNote:'النص من مصحف عثماني موثوق عبر alquran.cloud — نص حقيقي وليس بيانات تجريبية.',backToSurahs:'رجوع لقائمة السور',ayahsLabel:'آية',quranListFailed:'تعذر تحميل قائمة السور. تحقق من اتصال الإنترنت.',quranReadFailed:'تعذر تحميل نص السورة. تحقق من اتصال الإنترنت.',hadithOfDay:'حديث اليوم',hadithNo:'رقم',anotherHadith:'حديث آخر',hadithFailed:'تعذر تحميل الحديث.',quranTile:'المصحف',azkarTile:'الأذكار',azkarMenuItem:'🤲 الأذكار',azkarSourceNote:'من كتاب "حصن المسلم" للشيخ سعيد بن علي بن وهف القحطاني — كل ذكر موثّق بمصدره.',azkarMorning:'أذكار الصباح',azkarEvening:'أذكار المساء',azkarFailed:'تعذر تحميل الأذكار. تحقق من اتصال الإنترنت.',noAzkar:'لا توجد أذكار في هذا القسم.',sourceLabel:'المصدر',repeatLabel:'يُقال'},
+  en:{splashTag:'Your guide to the mosque & prayer',notifTitle:'Notifications',demoNote:'This is a demo prototype. Mosque data and prayer times are for demonstration only and will later be sourced officially.',greeting:'Peace be upon you',nextPrayerLabel:'Next Prayer',nearestMosque:'🕌 Nearest mosque to you',locating:'Locating…',navHome:'Home',navMosques:'Mosques',navPrayer:'Prayer',favorites:'Favorites',more:'More',qibla:'Qibla',mosquesTitle:'Mosques',searchPh:'Search by mosque name or area',listView:'List',mapView:'Map',mapNote:'Demo map of Qatar — individual mosque pins coming in the next version.',backToMosques:'Back to Mosques',directions:'Directions',todayTimes:'Today\'s Prayer Times',fridaySermon:'Upcoming Friday Sermon',sample:'Sample',facilities:'Facilities',lastUpdated:'Last updated',reportWrongInfo:'Report incorrect information',prayerDemoNote:'Times are auto-calculated for demo purposes. The government version will use official Ministry of Awqaf data.',todayTimes2:'Today\'s Times',lastThird:'Last Third of the Night',midnight:'Midnight',thirdStart:'Last third begins',thirdEnd:'Ends (Fajr)',nightAlert:'Last-third alert',qiblaDir:'Qibla Direction',north:'North',back:'Back',reportTitle:'Report an Issue',reportWhat:'What\'s the problem?',r1:'Mosque location is incorrect',r2:'Mosque info is outdated',r3:'A listed facility is unavailable',r4:'Other issue',reportDetails:'Additional details (optional)',reportPh:'Briefly describe the issue',sendReport:'Submit Report',language:'Language',prayerNotif:'Prayer notifications',darkMode:'Dark mode',reportGeneral:'⚠️ Report a general issue',aboutTitle:'About "Wahy"',aboutBody:'An independent, unofficial prototype exploring a unified mosque-services platform idea. Not affiliated with the Ministry of Awqaf and Islamic Affairs.',noFav:'No favorite mosques yet',noFavSub:'Tap ♥ on any mosque to add it here',km:'km',m:'m',remaining:'Remaining',h:'h',min:'min',openPage:'Open mosque page',generalReport:'General report (no mosque specified)',regarding:'Regarding',reportReceived:'Report received — ticket #',noResults:'No results',fajr:'Fajr',sunrise:'Sunrise',dhuhr:'Dhuhr',asr:'Asr',maghrib:'Maghrib',isha:'Isha',cap_small:'Small capacity',cap_medium:'Medium capacity',cap_large:'Large capacity',mapNote2:'Tap any marker to view mosque info.',retry:'Retry',locDenied:'📍 Location access was not granted — distances are shown from central Doha as a default.',prayerFailedCached:'Could not reach the timings source — showing last saved data.',prayerFailedNoCache:'Could not load prayer times. Check your internet connection.',navContent:'Content',contentSub:'Upcoming lessons and lectures from various mosques (sample data)',upcomingLessons:'Upcoming Lessons & Lectures',sermonArchive:'Past Friday Sermons Archive',noLessons:'No lessons currently scheduled',noArchive:'No archive available yet',favoritesMenuItem:'❤️ My Favorite Mosques',officialLinksTitle:'Official Links',ministrySiteLink:'🔗 Official website of the Ministry of Awqaf and Islamic Affairs',quranMenuItem:'📖 Mus\'haf (Quran)',quranSourceNote:'Text from a verified Uthmani mushaf via alquran.cloud — real text, not sample data.',backToSurahs:'Back to Surah list',ayahsLabel:'verses',quranListFailed:'Could not load the surah list. Check your internet connection.',quranReadFailed:'Could not load the surah text. Check your internet connection.',hadithOfDay:'Hadith of the Day',hadithNo:'No.',anotherHadith:'Another hadith',hadithFailed:'Could not load the hadith.',quranTile:'Mus\'haf',azkarTile:'Azkar',azkarMenuItem:'🤲 Azkar',azkarSourceNote:'From "Hisn al-Muslim" by Sheikh Sa\'id ibn Ali ibn Wahf Al-Qahtani — every dhikr is cited to its source.',azkarMorning:'Morning Azkar',azkarEvening:'Evening Azkar',azkarFailed:'Could not load the azkar. Check your internet connection.',noAzkar:'No azkar in this section.',sourceLabel:'Source',repeatLabel:'Repeat'}
 };
 let currentLang='ar';
 function t(k){ return STR[currentLang][k] || k; }
@@ -44,7 +44,78 @@ function go(screen){
   if(screen==='favorites') renderFavorites();
   if(screen==='content') renderContentList();
 }
-// ================= Quran (alquran.cloud) =================
+// ================= Hadith of the day (Sahih Bukhari / Sahih Muslim only) =================
+// Curated list of verified hadith numbers (book + absolute number) — kept short and
+// deliberately limited to the two most rigorously authenticated collections in Islam.
+const HADITH_POOL=[
+  {book:'bukhari',num:1,bookLabel:{ar:'صحيح البخاري',en:'Sahih al-Bukhari'}},
+  {book:'bukhari',num:6,bookLabel:{ar:'صحيح البخاري',en:'Sahih al-Bukhari'}},
+  {book:'muslim',num:1,bookLabel:{ar:'صحيح مسلم',en:'Sahih Muslim'}},
+  {book:'bukhari',num:13,bookLabel:{ar:'صحيح البخاري',en:'Sahih al-Bukhari'}},
+];
+function loadHadithOfDay(){
+  const pick=HADITH_POOL[Math.floor(Math.random()*HADITH_POOL.length)];
+  const el=document.getElementById('hadith-body');
+  el.innerHTML=`<div class="muted">…</div>`;
+  const arEdition=pick.book==='bukhari'?'ara-bukhari':'ara-muslim';
+  fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/${arEdition}/${pick.num}.json`)
+    .then(r=>{ if(!r.ok) throw new Error('bad-response'); return r.json(); })
+    .then(data=>{
+      const h=data.hadiths[0];
+      el.innerHTML=`
+        <div style="font-size:15px;line-height:2;margin-bottom:8px;">${h.text}</div>
+        <div class="pill">${pick.bookLabel[currentLang]} · ${t('hadithNo')} ${pick.num}</div>
+        <button class="btn small" style="margin-top:8px;" onclick="loadHadithOfDay()">${t('anotherHadith')}</button>`;
+    })
+    .catch(()=>{
+      el.innerHTML=`<div class="muted">${t('hadithFailed')}</div><button class="btn small" style="margin-top:8px;" onclick="loadHadithOfDay()">${t('retry')}</button>`;
+    });
+}
+// ================= Azkar (osamayy/azkar-db, verified by direct fetch — category/zekr/description/count/reference) =================
+let azkarCache=null, azkarTab='morning';
+const AZKAR_CATS={morning:'أذكار الصباح', evening:'أذكار المساء'};
+function openAzkar(){
+  go('azkar');
+  if(!azkarCache) loadAzkar();
+}
+function setAzkarTab(tab){
+  azkarTab=tab;
+  document.getElementById('tab-azkar-morning').classList.toggle('active', tab==='morning');
+  document.getElementById('tab-azkar-evening').classList.toggle('active', tab==='evening');
+  renderAzkar();
+}
+async function loadAzkar(){
+  const errEl=document.getElementById('azkar-error');
+  errEl.hidden=true;
+  document.getElementById('azkar-list').innerHTML=`<div class="muted">…</div>`;
+  try{
+    const res=await fetch('https://cdn.jsdelivr.net/gh/osamayy/azkar-db@master/azkar.json');
+    if(!res.ok) throw new Error('bad-response');
+    const data=await res.json();
+    azkarCache=data.rows; // each row: [category, zekr, description, count, reference, search]
+    renderAzkar();
+  }catch(e){
+    document.getElementById('azkar-list').innerHTML='';
+    document.getElementById('azkar-error-text').textContent=t('azkarFailed');
+    errEl.hidden=false;
+  }
+}
+function renderAzkar(){
+  if(!azkarCache) return;
+  const wantCat=AZKAR_CATS[azkarTab];
+  const items=azkarCache.filter(r=>r[0]===wantCat);
+  document.getElementById('azkar-list').innerHTML = items.map(r=>{
+    const [,zekr,description,count,reference]=r;
+    return `
+    <div class="azkar-card">
+      <div class="content">${zekr}</div>
+      ${count ? `<div class="meta-row">🔁 ${t('repeatLabel')} ${count}</div>` : ''}
+      ${description ? `<div class="fadl">${description}</div>` : ''}
+      ${reference ? `<div class="source">${t('sourceLabel')}: ${reference}</div>` : ''}
+    </div>`;
+  }).join('') || `<div class="muted">${t('noAzkar')}</div>`;
+}
+
 let surahListCache=[], currentSurahNumber=null;
 function openQuranList(){
   go('quran-list');
@@ -282,12 +353,16 @@ function applyLanguage(lang){
   document.querySelectorAll('.qr-back').forEach(el=>{ el.textContent = lang==='ar'?'→':'←'; });
   renderNotifs();
   renderNearest();
+  loadHadithOfDay();
   if(locationDenied) showLocationNote();
   if(!document.getElementById('screen-mosques').hidden){ renderMosqueList(); renderMapMarkers(); }
   if(!document.getElementById('screen-favorites').hidden) renderFavorites();
   if(!document.getElementById('screen-content').hidden) renderContentList();
   if(!document.getElementById('screen-quran-list').hidden && surahListCache.length) renderSurahList();
   if(!document.getElementById('screen-quran-read').hidden && currentSurahNumber) openSurah(currentSurahNumber);
+  if(!document.getElementById('screen-azkar').hidden && azkarCache){
+    renderAzkar();
+  }
   if(currentMosque && !document.getElementById('screen-detail').hidden) openMosque(currentMosque.id);
   if(todayTimings){ renderTimesTable('p-times', todayTimings); updateNextPrayer(); }
 }
@@ -413,6 +488,7 @@ function afterLocation(){
   const savedLang = localStorage.getItem('wahy-lang') || 'ar';
   applyLanguage(savedLang);
   renderNotifs();
+  loadHadithOfDay();
   initLocationAndLoad();
   setTimeout(()=>document.getElementById('splash').classList.add('hide'), 1600);
   document.getElementById('splash').addEventListener('click', ()=>document.getElementById('splash').classList.add('hide'));
