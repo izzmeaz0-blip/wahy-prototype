@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>وحي — دليل المساجد</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#7A1736">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="phone" id="phone">
+
+  <div id="splash">
+    <svg class="brand-mark-lg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" rx="22" fill="#F4F1EC"/>
+      <rect x="45" y="8" width="10" height="12" rx="2" fill="#7A1736"/>
+      <path d="M50 17 C 36 17 27 28 27 42 L27 74 L73 74 L73 42 C73 28 64 17 50 17 Z" fill="#7A1736"/>
+      <rect x="27" y="74" width="46" height="7" rx="2" fill="#7A1736"/>
+      <circle cx="70" cy="32" r="9" fill="#D8B565"/>
+      <circle cx="74" cy="29" r="8" fill="#F4F1EC"/>
+    </svg>
+    <div class="brand" style="margin-top:12px;">وحي</div>
+    <div class="tag" data-i18n="splashTag">دليلك إلى المسجد والصلاة</div>
+  </div>
+
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:9px;">
+      <svg class="brand-mark-sm" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="#F4F1EC"/>
+        <rect x="45" y="8" width="10" height="12" rx="2" fill="#7A1736"/>
+        <path d="M50 17 C 36 17 27 28 27 42 L27 74 L73 74 L73 42 C73 28 64 17 50 17 Z" fill="#7A1736"/>
+        <rect x="27" y="74" width="46" height="7" rx="2" fill="#7A1736"/>
+        <circle cx="70" cy="32" r="9" fill="#D8B565"/>
+        <circle cx="74" cy="29" r="8" fill="#F4F1EC"/>
+      </svg>
+      <div class="brand">وحي</div>
+    </div>
+    <div class="icons">
+      <div class="bell" onclick="toggleNotif()" role="button" tabindex="0" aria-label="الإشعارات" onkeydown="if(event.key==='Enter')toggleNotif()">🔔<span class="dot" id="notif-dot"></span></div>
+    </div>
+  </header>
+
+  <div id="notif-panel" onclick="if(event.target===this)toggleNotif()">
+    <div class="sheet">
+      <h2 data-i18n="notifTitle">الإشعارات</h2>
+      <div id="notif-list"></div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <main class="screen" id="screen-home">
+    <div class="demo-note" data-i18n="demoNote">هذا نموذج أولي تجريبي. بيانات المساجد ومواقيت الصلاة هنا لأغراض العرض فقط، وستُعتمد لاحقًا من مصدر رسمي.</div>
+    <div class="muted" style="margin-bottom:10px;" data-i18n="greeting">السلام عليكم</div>
+    <div class="location-note" id="location-note" hidden></div>
+    <div class="next-prayer">
+      <div class="label" data-i18n="nextPrayerLabel">الصلاة القادمة</div>
+      <div class="name" id="home-next-name">—</div>
+      <div class="time" id="home-next-time">—</div>
+      <div class="countdown" id="home-countdown">—</div>
+    </div>
+    <div class="card pressable" id="home-nearest-card">
+      <h2><span data-i18n="nearestMosque">🕌 أقرب مسجد إليك</span></h2>
+      <div id="home-nearest-body" class="muted" data-i18n="locating">جارٍ تحديد الموقع…</div>
+    </div>
+    <div class="card pressable" id="hadith-card">
+      <h2>📜 <span data-i18n="hadithOfDay">حديث اليوم</span></h2>
+      <div id="hadith-body" class="muted">…</div>
+    </div>
+    <div class="card ramadan-card" id="ramadan-card" hidden>
+      <div id="ramadan-body"></div>
+    </div>
+    <div class="quick-grid">
+      <div class="quick-item" onclick="go('mosques')"><span class="ic">🕌</span><span data-i18n="navMosques">المساجد</span></div>
+      <div class="quick-item" onclick="go('prayer')"><span class="ic">🕐</span><span data-i18n="navPrayer">الصلاة</span></div>
+      <div class="quick-item" onclick="go('prayer');scrollToQibla()"><span class="ic">🧭</span><span data-i18n="qibla">القبلة</span></div>
+      <div class="quick-item" onclick="go('favorites')"><span class="ic">❤️</span><span data-i18n="favorites">المفضلة</span></div>
+      <div class="quick-item" onclick="openQuranList()"><span class="ic">📖</span><span data-i18n="quranTile">المصحف</span></div>
+      <div class="quick-item" onclick="openAzkar()"><span class="ic">🤲</span><span data-i18n="azkarTile">الأذكار</span></div>
+      <div class="quick-item" onclick="go('ramadan')"><span class="ic">🌙</span><span data-i18n="ramadanTile">رمضانيات</span></div>
+      <div class="quick-item" onclick="go('eid')"><span class="ic">🎉</span><span data-i18n="eidTile">العيد</span></div>
+    </div>
+  </main>
+
+  <!-- MOSQUES -->
+  <main class="screen" id="screen-mosques" hidden>
+    <h1 style="margin-bottom:12px;" data-i18n="mosquesTitle">المساجد</h1>
+    <div class="search-box">
+      <span>🔍</span>
+      <input id="mosque-search" data-i18n-ph="searchPh" placeholder="ابحث باسم المسجد أو المنطقة" oninput="renderMosqueList()">
+    </div>
+    <div class="toggle-row">
+      <button id="tab-list" class="active" onclick="setMosqueView('list')" data-i18n="listView">القائمة</button>
+      <button id="tab-map" onclick="setMosqueView('map')" data-i18n="mapView">الخريطة</button>
+    </div>
+    <div id="mosque-map-view" hidden>
+      <div id="real-map"></div>
+      <div class="muted" style="font-size:11px;margin-bottom:10px;" data-i18n="mapNote2">اضغط أي علامة لعرض معلومات المسجد.</div>
+    </div>
+    <div id="mosque-list-view"></div>
+  </main>
+
+  <!-- DETAIL -->
+  <main class="screen" id="screen-detail" hidden>
+    <div class="back-row" onclick="go('mosques')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')go('mosques')"><span id="back-arrow">→</span> <span data-i18n="backToMosques">رجوع للمساجد</span></div>
+    <div class="detail-hero">
+      <button class="heart-btn" id="detail-heart" onclick="toggleFavorite(currentMosque.id, this)" aria-label="إضافة للمفضلة" aria-pressed="false">♥</button>
+      <div class="mname" id="d-name">—</div>
+      <div class="mmeta" id="d-meta">—</div>
+      <button class="btn small" style="width:100%;background:#fff;color:var(--primary);" onclick="openDirections()">🧭 <span data-i18n="directions">الاتجاهات</span></button>
+    </div>
+    <div class="card">
+      <h2 data-i18n="todayTimes">مواقيت الصلاة اليوم</h2>
+      <table class="times-table" id="d-times"></table>
+    </div>
+    <div class="card">
+      <h2>🕌 <span data-i18n="fridaySermon">خطبة الجمعة القادمة</span></h2>
+      <div class="pill" data-i18n="sample">تجريبي</div>
+      <div style="font-size:14px;font-weight:500;margin:6px 0;" id="d-sermon-title">—</div>
+      <div class="muted" id="d-sermon-time">—</div>
+    </div>
+    <div class="card">
+      <h2>📖 <span data-i18n="upcomingLessons">الدروس والمحاضرات القادمة</span></h2>
+      <div id="d-lessons"></div>
+    </div>
+    <div class="card">
+      <h2>🎙️ <span data-i18n="sermonArchive">أرشيف خطب الجمعة السابقة</span></h2>
+      <div id="d-sermon-archive"></div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="facilities">المرافق</h2>
+      <div class="fac-list" id="d-facilities"></div>
+      <div class="muted" style="margin-top:10px;font-size:12px;" id="d-capacity"></div>
+    </div>
+    <div class="card">
+      <div class="muted" style="margin-bottom:4px;"><span data-i18n="lastUpdated">آخر تحديث للمعلومات</span>: <span id="d-updated"></span></div>
+      <div class="report-link" onclick="openReport(currentMosque)">⚠️ <span data-i18n="reportWrongInfo">الإبلاغ عن معلومة غير صحيحة</span></div>
+    </div>
+  </main>
+
+  <!-- PRAYER -->
+  <main class="screen" id="screen-prayer" hidden>
+    <h1 style="margin-bottom:12px;" data-i18n="navPrayer">الصلاة</h1>
+    <div class="demo-note" data-i18n="prayerDemoNote">المواقيت محسوبة تلقائيًا لأغراض العرض. النسخة الحكومية تعتمد بيانات وزارة الأوقاف الرسمية.</div>
+    <div class="error-banner" id="prayer-error-banner" hidden>
+      <span id="prayer-error-text"></span>
+      <button onclick="loadPrayerTimes()" data-i18n="retry">إعادة المحاولة</button>
+    </div>
+    <div class="next-prayer">
+      <div class="label" data-i18n="nextPrayerLabel">الصلاة القادمة</div>
+      <div class="name" id="p-next-name">—</div>
+      <div class="time" id="p-next-time">—</div>
+      <div class="countdown" id="p-countdown">—</div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="todayTimes2">مواقيت اليوم</h2>
+      <table class="times-table" id="p-times"></table>
+      <div class="night-box" id="night-box">
+        <h2 style="margin-bottom:8px;">🌙 <span data-i18n="lastThird">الثلث الأخير من الليل</span></h2>
+        <div class="row"><span data-i18n="midnight">منتصف الليل</span><b id="p-midnight">—</b></div>
+        <div class="row"><span data-i18n="thirdStart">يبدأ الثلث الأخير</span><b id="p-third-start">—</b></div>
+        <div class="row"><span data-i18n="thirdEnd">ينتهي (الفجر)</span><b id="p-third-end">—</b></div>
+        <div class="settings-row" style="border:none;padding-top:8px;">
+          <span data-i18n="nightAlert">تنبيه الثلث الأخير</span>
+          <div class="switch" id="night-switch" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="qibla-card">
+      <h2>🧭 <span data-i18n="qiblaDir">اتجاه القبلة</span></h2>
+      <div class="compass-wrap">
+        <div class="compass">
+          <div class="n-label" data-i18n="north">شمال</div>
+          <div class="needle" id="qibla-needle"></div>
+        </div>
+        <div class="muted" id="qibla-deg">—</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FAVORITES -->
+  <main class="screen" id="screen-favorites" hidden>
+    <h1 style="margin-bottom:12px;" data-i18n="favorites">المفضلة</h1>
+    <div id="fav-list"></div>
+  </main>
+
+  <!-- CONTENT (lessons & lectures) -->
+  <main class="screen" id="screen-content" hidden>
+    <h1 style="margin-bottom:4px;" data-i18n="navContent">المحتوى</h1>
+    <div class="muted" style="margin-bottom:14px;" data-i18n="contentSub">دروس ومحاضرات قادمة من مساجد مختلفة (بيانات تجريبية)</div>
+    <div id="content-list"></div>
+  </main>
+
+  <!-- QURAN: surah list -->
+  <main class="screen" id="screen-quran-list" hidden>
+    <div class="back-row" onclick="go('more')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')go('more')"><span class="qr-back">→</span> <span data-i18n="back">رجوع</span></div>
+    <h1 style="margin-bottom:4px;" data-i18n="quranMenuItem">📖 المصحف</h1>
+    <div class="muted" style="margin-bottom:14px;" data-i18n="quranSourceNote">النص من مصحف عثماني موثوق عبر alquran.cloud — نص حقيقي وليس بيانات تجريبية.</div>
+    <div class="error-banner" id="quran-list-error" hidden>
+      <span id="quran-list-error-text"></span>
+      <button onclick="loadSurahList()" data-i18n="retry">إعادة المحاولة</button>
+    </div>
+    <div id="quran-surah-list"></div>
+  </main>
+
+  <!-- QURAN: reader -->
+  <main class="screen" id="screen-quran-read" hidden>
+    <div class="back-row" onclick="go('quran-list')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')go('quran-list')"><span class="qr-back">→</span> <span data-i18n="backToSurahs">رجوع لقائمة السور</span></div>
+    <h1 id="qr-surah-title" style="margin-bottom:4px;">—</h1>
+    <div class="muted" id="qr-surah-meta" style="margin-bottom:12px;"></div>
+    <div class="error-banner" id="quran-read-error" hidden>
+      <span id="quran-read-error-text"></span>
+      <button id="quran-read-retry" data-i18n="retry">إعادة المحاولة</button>
+    </div>
+    <div id="qr-ayat" class="quran-text"></div>
+  </main>
+
+  <!-- AZKAR -->
+  <main class="screen" id="screen-azkar" hidden>
+    <div class="back-row" onclick="go('more')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')go('more')"><span class="qr-back">→</span> <span data-i18n="back">رجوع</span></div>
+    <h1 style="margin-bottom:4px;" data-i18n="azkarMenuItem">🤲 الأذكار</h1>
+    <div class="muted" style="margin-bottom:12px;" data-i18n="azkarSourceNote">من كتاب "حصن المسلم" للشيخ سعيد بن علي بن وهف القحطاني — كل ذكر موثّق بمصدره.</div>
+    <div class="toggle-row">
+      <button id="tab-azkar-morning" class="active" onclick="setAzkarTab('morning')" data-i18n="azkarMorning">أذكار الصباح</button>
+      <button id="tab-azkar-evening" onclick="setAzkarTab('evening')" data-i18n="azkarEvening">أذكار المساء</button>
+    </div>
+    <div class="error-banner" id="azkar-error" hidden>
+      <span id="azkar-error-text"></span>
+      <button onclick="loadAzkar()" data-i18n="retry">إعادة المحاولة</button>
+    </div>
+    <div id="azkar-list"></div>
+  </main>
+
+  <!-- RAMADAN -->
+  <main class="screen" id="screen-ramadan" hidden>
+    <div class="back-row" onclick="go('more')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')go('more')"><span class="qr-back">→</span> <span data-i18n="back">رجوع</span></div>
+    <h1 style="margin-bottom:4px;" data-i18n="ramadanMenuItem">🌙 رمضانيات</h1>
+    <div class="muted" style="margin-bottom:14px;" data-i18n="ramadanSub">مواقيت الإفطار والسحور، دعاء الإفطار، وفوازير رمضانية — جزء من موسم رمضان في «وحي»</div>
+
+    <div class="card ramadan-banner">
+      <svg class="skyline" viewBox="0 0 800 160" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="690" cy="40" r="22" fill="#F3E8C8" opacity="0.5"/>
+        <circle cx="700" cy="36" r="18" class="moon-cut"/>
+        <g fill="#ffffff" opacity="0.16">
+          <rect x="20" y="88" width="18" height="72"/><rect x="44" y="72" width="13" height="88"/>
+          <rect x="64" y="104" width="22" height="56"/>
+          <polygon points="104,160 104,80 116,64 128,80 128,160"/>
+          <rect x="144" y="56" width="14" height="104"/><rect x="164" y="76" width="19" height="84"/>
+          <path d="M200 160 L200 48 Q210 40 220 48 L220 160 Z"/>
+          <rect x="240" y="92" width="16" height="68"/><rect x="264" y="68" width="13" height="92"/>
+          <rect x="298" y="120" width="5" height="40"/><circle cx="300" cy="116" r="4"/>
+          <path d="M316 160 L316 120 Q332 100 348 120 L348 160 Z"/>
+          <rect x="360" y="80" width="16" height="80"/><rect x="384" y="60" width="19" height="100"/>
+          <rect x="412" y="96" width="14" height="64"/>
+          <polygon points="448,160 448,104 480,76 512,104 512,160"/>
+          <rect x="528" y="72" width="16" height="88"/><rect x="552" y="92" width="13" height="68"/>
+          <rect x="576" y="56" width="18" height="104"/><rect x="604" y="84" width="14" height="76"/>
+          <rect x="740" y="76" width="16" height="84"/><rect x="764" y="100" width="13" height="60"/>
+        </g>
+      </svg>
+      <div class="banner-content">
+        <div class="row">
+          <div>
+            <div style="font-size:12px;opacity:.85;" data-i18n="iftarLabel">موعد الإفطار (المغرب)</div>
+            <div style="font-size:22px;font-weight:900;" id="ramadan-iftar-time">—</div>
+          </div>
+          <div style="text-align:left;">
+            <div style="font-size:12px;opacity:.85;" data-i18n="suhoorEndLabel">آخر وقت للسحور (الفجر)</div>
+            <div style="font-size:22px;font-weight:900;" id="ramadan-suhoor-time">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="iftarDuaTitle">دعاء الإفطار</h2>
+      <div style="font-size:16px;line-height:2.1;margin-bottom:8px;" data-i18n="iftarDuaText">اللَّهُمَّ لَكَ صُمْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ، ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ</div>
+      <div class="muted" style="font-size:11px;" data-i18n="iftarDuaSource">عن ابن عمر رضي الله عنهما، رواه أبو داود</div>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="imsakiyaTitle">إمساكية رمضان الكاملة</h2>
+      <button class="btn secondary" onclick="openImsakiya()" data-i18n="imsakiyaShow">عرض إمساكية الشهر</button>
+    </div>
+
+    <div class="card">
+      <h2>🎉 <span data-i18n="fawazeerTitle">فوازير رمضان</span></h2>
+      <div class="pill" data-i18n="fawazeerNote">أسئلة عامة للتسلية — وليست فتاوى</div>
+      <div id="fawazeer-score" class="muted" style="margin:8px 0;"></div>
+      <div id="fawazeer-question" style="font-size:15px;font-weight:700;margin:10px 0;font-family:'Cairo',sans-serif;"></div>
+      <div id="fawazeer-options"></div>
+      <div id="fawazeer-feedback" style="margin-top:10px;font-size:13px;font-weight:600;"></div>
+      <button class="btn" style="margin-top:12px;" onclick="nextFawazeerQuestion()" data-i18n="nextQuestion">السؤال التالي</button>
+    </div>
+  </main>
+
+  <!-- IMSAKIYA -->
+  <main class="screen" id="screen-imsakiya" hidden>
+    <div class="back-row" onclick="go('more')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')go('more')"><span class="qr-back">→</span> <span data-i18n="back">رجوع</span></div>
+    <h1 style="margin-bottom:4px;" data-i18n="imsakiyaTitle">إمساكية رمضان الكاملة</h1>
+    <div class="muted" style="margin-bottom:14px;" id="imsakiya-sub" data-i18n="imsakiyaSub">جدول كامل لمواقيت الإمساك (الفجر) والإفطار (المغرب) لشهر رمضان، محسوب فلكيًا لموقعك.</div>
+    <div class="error-banner" id="imsakiya-error" hidden>
+      <span id="imsakiya-error-text"></span>
+      <button onclick="loadImsakiya()" data-i18n="retry">إعادة المحاولة</button>
+    </div>
+    <div class="card" id="imsakiya-card">
+      <table class="times-table" id="imsakiya-table"></table>
+    </div>
+  </main>
+
+  <!-- EID -->
+  <main class="screen" id="screen-eid" hidden>
+    <div class="back-row" onclick="go('more')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')go('more')"><span class="qr-back">→</span> <span data-i18n="back">رجوع</span></div>
+    <h1 style="margin-bottom:4px;" data-i18n="eidMenuItem">🎉 العيد</h1>
+    <div class="muted" style="margin-bottom:14px;" data-i18n="eidSub">معلومات عامة عن صلاة العيد في قطر — عيد الفطر وعيد الأضحى</div>
+
+    <div class="card">
+      <h2 data-i18n="eidTimeTitle">موعد صلاة العيد</h2>
+      <p style="font-size:14px;line-height:1.9;" data-i18n="eidTimeText">تُقام صلاة العيد عادة بعد شروق الشمس بنحو 15 إلى 20 دقيقة. التوقيت الدقيق يُعلن رسميًا من وزارة الأوقاف قبيل العيد بأيام قليلة.</p>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="eidMusallaTitle">مصليات العيد</h2>
+      <p style="font-size:14px;line-height:1.9;margin-bottom:10px;" data-i18n="eidMusallaText">تخصص وزارة الأوقاف والشؤون الإسلامية في قطر مئات المصليات والمساجد لصلاة العيد كل عام (وصل العدد في سنوات سابقة إلى ما يقارب 400-600 موقع)، موزعة جغرافيًا لتغطية كل مناطق الدولة.</p>
+      <div class="notice" style="background:var(--accent-light);color:var(--accent);filter:brightness(0.7);font-size:11px;padding:10px 12px;border-radius:8px;line-height:1.7;" data-i18n="eidMusallaCaveat">⚠️ القائمة الكاملة بأسماء المصليات ومواقعها الدقيقة تُنشر رسميًا من الوزارة قبل كل عيد مباشرة، ولا نملك نسخة محدّثة منها هنا. اضغط الزر أدناه للوصول للمصدر الرسمي عند قرب الموعد.</div>
+      <a href="https://www.islam.gov.qa" target="_blank" rel="noopener" class="btn" style="display:block;text-align:center;margin-top:12px;text-decoration:none;" data-i18n="eidMusallaLink">عرض القائمة الرسمية من الوزارة</a>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="eidAreasTitle">مناطق شملتها المصليات سابقًا (للتوضيح فقط)</h2>
+      <div class="fac-list" id="eid-areas-list"></div>
+      <div class="muted" style="font-size:11px;margin-top:8px;" data-i18n="eidAreasCaveat">قائمة توضيحية من أعوام سابقة، وليست القائمة الحالية أو الكاملة.</div>
+    </div>
+  </main>
+
+  <!-- REPORT -->
+  <main class="screen" id="screen-report" hidden>
+    <div class="back-row" onclick="goBack()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')goBack()"><span id="back-arrow2">→</span> <span data-i18n="back">رجوع</span></div>
+    <h1 style="margin-bottom:4px;" data-i18n="reportTitle">الإبلاغ عن خطأ</h1>
+    <div class="muted" style="margin-bottom:14px;" id="report-mosque-label">—</div>
+    <div class="form-group">
+      <label data-i18n="reportWhat">ما المشكلة؟</label>
+      <label class="radio-opt"><input type="radio" name="rtype" checked> <span data-i18n="r1">موقع المسجد غير صحيح</span></label>
+      <label class="radio-opt"><input type="radio" name="rtype"> <span data-i18n="r2">معلومات المسجد غير محدثة</span></label>
+      <label class="radio-opt"><input type="radio" name="rtype"> <span data-i18n="r3">مرفق غير متوفر فعليًا</span></label>
+      <label class="radio-opt"><input type="radio" name="rtype"> <span data-i18n="r4">مشكلة أخرى</span></label>
+    </div>
+    <div class="form-group">
+      <label data-i18n="reportDetails">تفاصيل إضافية (اختياري)</label>
+      <textarea rows="4" data-i18n-ph="reportPh" placeholder="اكتب وصفًا مختصرًا للمشكلة"></textarea>
+    </div>
+    <button class="btn" onclick="submitReport()" data-i18n="sendReport">إرسال البلاغ</button>
+  </main>
+
+  <!-- MORE -->
+  <main class="screen" id="screen-more" hidden>
+    <h1 style="margin-bottom:14px;" data-i18n="more">المزيد</h1>
+    <div class="card">
+      <div class="settings-row">
+        <span data-i18n="language">اللغة</span>
+        <div class="lang-toggle">
+          <button id="lang-ar" class="active" onclick="applyLanguage('ar')">AR</button>
+          <button id="lang-en" onclick="applyLanguage('en')">EN</button>
+        </div>
+      </div>
+      <div class="settings-row"><span data-i18n="prayerNotif">إشعارات الصلاة (قبل 5 دقائق)</span>
+        <div class="switch" id="notif-switch" onclick="togglePrayerNotif(this)"><div class="knob"></div></div>
+      </div>
+      <div class="settings-row"><span data-i18n="darkMode">الوضع الليلي</span>
+        <div class="switch" id="dark-switch" onclick="toggleDark(this)"><div class="knob"></div></div>
+      </div>
+      <div class="settings-row" onclick="go('favorites')" style="cursor:pointer;">
+        <span data-i18n="favoritesMenuItem">❤️ مساجدي المفضلة</span><span>›</span>
+      </div>
+      <div class="settings-row" onclick="openQuranList()" style="cursor:pointer;">
+        <span data-i18n="quranMenuItem">📖 المصحف</span><span>›</span>
+      </div>
+      <div class="settings-row" onclick="openAzkar()" style="cursor:pointer;">
+        <span data-i18n="azkarMenuItem">🤲 الأذكار</span><span>›</span>
+      </div>
+      <div class="settings-row" onclick="go('ramadan')" style="cursor:pointer;">
+        <span data-i18n="ramadanMenuItem">🌙 رمضانيات</span><span>›</span>
+      </div>
+      <div class="settings-row" onclick="go('eid')" style="cursor:pointer;">
+        <span data-i18n="eidMenuItem">🎉 العيد ومصليات العيد</span><span>›</span>
+      </div>
+      <div class="settings-row" onclick="openImsakiya()" style="cursor:pointer;">
+        <span data-i18n="imsakiyaMenuShort">📅 إمساكية رمضان</span><span>›</span>
+      </div>
+      <div class="settings-row" onclick="go('eid')" style="cursor:pointer;">
+        <span data-i18n="eidMenuItem">🎉 العيد</span><span>›</span>
+      </div>
+      <div class="settings-row" onclick="go('eid')" style="cursor:pointer;">
+        <span data-i18n="eidMenuItem">🎉 العيد</span><span>›</span>
+      </div>
+      <div class="settings-row" onclick="openReport(null)" style="cursor:pointer;">
+        <span data-i18n="reportGeneral">⚠️ الإبلاغ عن مشكلة عامة</span><span>›</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="officialLinksTitle">روابط رسمية</h2>
+      <div class="settings-row" style="border-bottom:none;">
+        <a href="https://www.islam.gov.qa" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:none;" data-i18n="ministrySiteLink">🔗 الموقع الرسمي لوزارة الأوقاف والشؤون الإسلامية</a>
+      </div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="aboutTitle">عن «وحي»</h2>
+      <div class="muted" data-i18n="aboutBody">نموذج أولي مستقل، غير رسمي، لاستكشاف فكرة منصة موحدة لخدمات المساجد. غير تابع لوزارة الأوقاف والشؤون الإسلامية.</div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <nav class="bottom-nav" role="navigation" aria-label="التنقل الرئيسي">
+    <button data-s="home" class="active" onclick="go('home')" aria-label="الرئيسية"><span class="ic" aria-hidden="true">🏠</span><span data-i18n="navHome">الرئيسية</span></button>
+    <button data-s="mosques" onclick="go('mosques')" aria-label="المساجد"><span class="ic" aria-hidden="true">🕌</span><span data-i18n="navMosques">المساجد</span></button>
+    <button data-s="prayer" onclick="go('prayer')" aria-label="الصلاة"><span class="ic" aria-hidden="true">🕐</span><span data-i18n="navPrayer">الصلاة</span></button>
+    <button data-s="content" onclick="go('content')" aria-label="المحتوى"><span class="ic" aria-hidden="true">📖</span><span data-i18n="navContent">المحتوى</span></button>
+    <button data-s="more" onclick="go('more')" aria-label="المزيد"><span class="ic" aria-hidden="true">⋯</span><span data-i18n="more">المزيد</span></button>
+  </nav>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
